@@ -55,13 +55,13 @@ export default function FevArticles(props: Props) {
             data?.preferences?.SelectedSports.length ||
             data?.preferences?.SelectedTeams.length
           ) {
-            const preferanceNews: News[] = [];
+            const preferenceNews: News[] = [];
             if (data?.preferences?.SelectedSports.length) {
               filteredArticles.forEach((newsItem: any) => {
                 if (
                   data.preferences.SelectedSports.includes(newsItem.sport.name)
                 ) {
-                  preferanceNews.push(newsItem);
+                  preferenceNews.push(newsItem);
                 }
               });
             }
