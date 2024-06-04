@@ -74,7 +74,7 @@ const SigninForm:React.FC = () => {
 
       <br />
       <button className="text-white bg-blue-400 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-white-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" id="backToHomeButton">
-        <a href="/signup" className='text-bold text-m'>
+        <a onClick={() => <Navigate to={'/signup'} replace />} className='text-bold text-m'>
           New Here? SignUp
         </a>
       </button>

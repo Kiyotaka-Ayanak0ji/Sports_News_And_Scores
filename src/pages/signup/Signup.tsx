@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useForm, SubmitHandler } from "react-form-hook"
+import { useForm, SubmitHandler } from "react-hook-form"
 import { customFetch } from '../../utils/middleware';
 import { API_KEY } from '../../config/constants';
 import { ToastContainer, Bounce, toast } from 'react-toastify';
