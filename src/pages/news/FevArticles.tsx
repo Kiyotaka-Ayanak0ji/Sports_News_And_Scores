@@ -69,13 +69,13 @@ export default function FevArticles(props: Props) {
               filteredArticles.forEach((newsItem: News) => {
                 newsItem.teams.forEach((team: any) => {
                   if (data.preferences.SelectedTeams.includes(team.name)) {
-                    preferanceNews.push(newsItem);
+                    preferenceNews.push(newsItem);
                   }
                 });
               });
             }
 
-            setFevArticles([...new Set(preferanceNews)]);
+            setFevArticles([...new Set(preferenceNews)]);
           } else {
             setFevArticles(filteredArticles);
           }
