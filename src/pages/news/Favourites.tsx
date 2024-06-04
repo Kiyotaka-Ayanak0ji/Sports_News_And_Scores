@@ -48,8 +48,8 @@ export default function Favourites() {
       const data:Data = fetchPreferences();
       if (data && !data?.errors) {
         if (Object.keys(data ? data?.preferences : {}).length) {
-          data.preferences.SelectedSport.length !== 0
-            ? setOptionFevSport(data.preferences.SelectedSport)
+          data.preferences.SelectedSports.length !== 0
+            ? setOptionFevSport(data.preferences.SelectedSports)
             : setOptionFevSport(sports.map((sport: Sport) => sport.name));
           if (data.preferences.SelectedTeams.length !== 0) {
             setOptionFevTeam(data.preferences.SelectedTeams);
