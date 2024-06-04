@@ -1,19 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FevArticles from "./FevArticles";
 import { useTeamState } from "../../context/teams/context";
 import { Team } from "../../types/matches";
 import { useSportsState } from "../../context/sport/context";
 import { Sport } from "../../types/sports";
 import { Fragment } from "react";
-import { Listbox, Transition } from "@headlessui/react";
+import { Listbox, ListboxOptions, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { fetchPreferences } from "../../context/user/actions";
+import { isAuth } from "../dashboard/Settings";
+
+interface Data {
+  preferences: UserPreferences,
+  errors?: string
+}
+
+interface UserPreferences{
+  SelectedSports: string[],
+  SelectedTeams: string[]
+}
 
 export default function Favourites() {
   const [fevSport, setFevSport] = useState("Favourite Sport");
   const [fevTeam, setFevTeam] = useState("Favourite Team");
 
-  const state: any = useSportState();
+  const state: any = useSportsState();
 
   const { sports, isLoading } = state;
 
@@ -30,11 +41,11 @@ export default function Favourites() {
 
   const isLoggedIn = !!localStorage.getItem("userData");
 
-  const { isOpen } = useContext(CustomizeContext);
+  // const { isOpen } = useContext(CustomizeContext);
 
   const settingOptionState = async () => {
-    if (isLoggedIn) {
-      const data = await FetchPreferences();
+    if (isAuth) {
+      const data:Data = fetchPreferences();
       if (data && !data?.errors) {
         if (Object.keys(data ? data?.preferences : {}).length) {
           data.preferences.SelectedSport.length !== 0
@@ -79,7 +90,7 @@ export default function Favourites() {
         <div className="mb-2">
           <Listbox value={fevSport} onChange={setFevSport}>
             <div className="relative mt-1">
-              <Listbox.Button className="relative w-full cursor-default rounded-md bg-white dark:bg-slate-600 p-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
+              <ListboxButton className="relative w-full cursor-default rounded-md bg-white dark:bg-slate-600 p-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
                 <span className="block truncate">{fevSport}</span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   <ChevronUpDownIcon
@@ -87,16 +98,16 @@ export default function Favourites() {
                     aria-hidden="true"
                   />
                 </span>
-              </Listbox.Button>
+              </ListboxButton>
               <Transition
                 as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="z-20 absolute mt-1 max-h-60 w-full overflow-auto rounded-md dark:bg-slate-600 bg-white py-1 text-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListboxOptions className="z-20 absolute mt-1 max-h-60 w-full overflow-auto rounded-md dark:bg-slate-600 bg-white py-1 text-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {optionFevSport.map((sport: string) => (
-                    <Listbox.Option
+                    <ListboxOption
                       key={sport}
                       className={({ active }) =>
                         `relative cursor-default select-none py-2 pl-10 pr-4 ${active
@@ -124,9 +135,9 @@ export default function Favourites() {
                           ) : null}
                         </>
                       )}
-                    </Listbox.Option>
+                    </ListboxOption>
                   ))}
-                </Listbox.Options>
+                </ListboxOptions>
               </Transition>
             </div>
           </Listbox>
@@ -134,7 +145,7 @@ export default function Favourites() {
         <div>
           <Listbox value={fevTeam} onChange={setFevTeam}>
             <div className="relative mt-1">
-              <Listbox.Button className="relative w-full cursor-default dark:bg-slate-600 rounded-md bg-white p-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
+              <ListboxButton className="relative w-full cursor-default dark:bg-slate-600 rounded-md bg-white p-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-300 sm:text-sm">
                 <span className="block truncate">{fevTeam}</span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                   <ChevronUpDownIcon
@@ -149,9 +160,9 @@ export default function Favourites() {
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="z-10 absolute mt-1 max-h-60 w-full overflow-auto rounded-md dark:bg-slate-600 bg-white py-1 text-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListboxOptions className="z-10 absolute mt-1 max-h-60 w-full overflow-auto rounded-md dark:bg-slate-600 bg-white py-1 text-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                   {optionFevTeam.map((team: string) => (
-                    <Listbox.Option
+                    <ListboxOption
                       key={team}
                       className={({ active }) =>
                         `relative cursor-default select-none py-2 pl-10 pr-4 ${active
@@ -179,9 +190,9 @@ export default function Favourites() {
                           ) : null}
                         </>
                       )}
-                    </Listbox.Option>
+                    </ListboxOption>
                   ))}
-                </Listbox.Options>
+                </ListboxOptions>
               </Transition>
             </div>
           </Listbox>
