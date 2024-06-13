@@ -10,9 +10,9 @@ const SignupForm:React.FC = () => {
     const [email,setUserEmail] = useState('');
     const [password,setPassword] = useState('');
 
-    const navigate = useNavigate();
-
+    
     const handleSubmit = async (event :React.FormEvent<HTMLFormElement>) => {
+        const navigate = useNavigate();
         event.preventDefault();
 
         try{
