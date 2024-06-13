@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { createUser } from '../../context/user/actions';
 import { Bounce, toast } from 'react-toastify';
 import { useUserDispatch } from '../../context/user/context';
@@ -9,6 +9,8 @@ const SignupForm:React.FC = () => {
     const [name,setUserName] = useState('');
     const [email,setUserEmail] = useState('');
     const [password,setPassword] = useState('');
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (event :React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -37,7 +39,10 @@ const SignupForm:React.FC = () => {
                     closeOnClick: true
                 });
             }
-            return data;
+
+            if(!data.errors){
+                navigate('/');
+            }
 
         }catch(error){
             console.error(error);
