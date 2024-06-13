@@ -53,7 +53,7 @@ const Navbar = () => {
                 theme={"light"}
                 transition = {Bounce}
             />
-            <div className="relative flex-row bg-gray-400 dark:bg-stone-500 font-semibold text-black dark:text-white">
+            <div className="absolute mb-2 flex-row bg-gray-400 dark:bg-stone-500 font-semibold text-black dark:text-white">
             
                 <div className='absolute left-0'>
                     <ErrorBoundary>

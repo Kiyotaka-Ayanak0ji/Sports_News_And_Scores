@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { fetchUser } from '../../context/user/actions';
 import { Bounce, toast } from 'react-toastify';
+import { User } from '../../types/user';
 
 const SigninForm:React.FC = () => {
     const [email,setUseremail] = useState('');
     const [password,setPassword] = useState('');
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (event :React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -16,9 +19,11 @@ const SigninForm:React.FC = () => {
                 password: password
             }
             //Get response..
-            const data = await fetchUser(body);
+            const data:User = await fetchUser(body);
 
-            return data;
+            if(!data.errors){
+              navigate('/');
+            }
 
         }catch(error){
             console.error(error);

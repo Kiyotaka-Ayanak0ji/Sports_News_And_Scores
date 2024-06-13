@@ -1,4 +1,4 @@
-functionsDirectory = "/root/prototype/netlify/functions"
+functionsDirectory = "/root/sports-center/netlify/functions"
 functionsDirectoryOrigin = "ui"
 plugins = []
 headers = []
@@ -9,11 +9,11 @@ redirects = []
 [functions."*"]
 
 [build]
-publish = "/root/prototype/dist"
+publish = "/root/sports-center/dist"
 publishOrigin = "ui"
 command = "npm run build"
 commandOrigin = "ui"
-functions = "/root/prototype/netlify/functions"
+functions = "/root/sports-center/netlify/functions"
 
 [build.environment]
 
