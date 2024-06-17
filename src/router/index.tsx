@@ -5,10 +5,10 @@ import Signin from "../pages/signin";
 import Signup from "../pages/signup";
 import ProtectedRoute from "./ProtectedRoute";
 import ErrorBoundary from "../ErrorBoundary.tsx";
-import Preferences from "../pages/dashboard/Settings.tsx";
 import NewsDetails from "../pages/news/NewsDetails.tsx";
 import NewsContainer from "../pages/news/index.tsx";
 import LiveMatch from "../pages/live_matches/index.tsx";
+import Settings from "../pages/dashboard/Settings.tsx";
 
 const Display = React.lazy(() =>  import("../pages/dashboard/index.tsx"));
 const NotFound = React.lazy(() => import("./NotFound.tsx"));
@@ -49,11 +49,11 @@ const router = createBrowserRouter([
     ErrorBoundary: () => <span className="font-bold text-black font-mono">There was some unexpected error</span>
   },
   {
-    path: "/",
+    path: "/dashboard",
     element: <Display />,
     children: [
       {
-        path: "",
+        path: "/dashboard",
         element: (
           <>
             <LiveMatch />
@@ -62,12 +62,12 @@ const router = createBrowserRouter([
         ),
         children: [
           {
-            path: "/articles/:articleID",
+            path: "/dashboard/articles/:articleID",
             element: <NewsDetails />,
           },
           {
-            path: "/preferences",
-            element: <Preferences />,
+            path: "/dashboard/preferences",
+            element: <Settings />,
           },
         ],
       },

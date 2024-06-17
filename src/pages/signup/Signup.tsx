@@ -1,51 +1,54 @@
 import React, { useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { createUser } from '../../context/user/actions';
 import { Bounce, toast } from 'react-toastify';
 import { useUserDispatch } from '../../context/user/context';
 import { User } from '../../types/user';
 
 const SignupForm:React.FC = () => {
+
     const [name,setUserName] = useState('');
     const [email,setUserEmail] = useState('');
     const [password,setPassword] = useState('');
-
-    
+  
     const handleSubmit = async (event :React.FormEvent<HTMLFormElement>) => {
+        
         const navigate = useNavigate();
-        event.preventDefault();
 
+        event.preventDefault();
+        
         try{
             const body = {
-                email: email,
-                password: password
+              email: email,
+              password: password
             }
 
             const dispatch = useUserDispatch();
             
             //Get response..
             const data:User = await createUser(dispatch,body);
-
+ 
             if(data.errors){
-                toast.error("Internal Server Error", {
-                    pauseOnHover: false,
-                    theme: "colored",
-                    delay: 5000,
-                    transition: Bounce,
-                    hideProgressBar: false,
-                    pauseOnFocusLoss: true,
-                    position: "top-right",
-                    autoClose: 3000,
-                    closeOnClick: true
-                });
+              toast.error("Internal Server Error", {
+                pauseOnHover: false,
+                theme: "colored",
+                delay: 5000,
+                transition: Bounce,
+                hideProgressBar: false,
+                pauseOnFocusLoss: true,
+                position: "top-right",
+                autoClose: 3000,
+                closeOnClick: true
+              });
             }
+          
+            localStorage.setItem("authToken", data.auth_token);
+            localStorage.setItem("userData", JSON.stringify(data.user));
 
-            if(!data.errors){
-                navigate('/');
-            }
-
+            navigate('/dashboard');
         }catch(error){
             console.error(error);
+
             toast.error("Internal Server Error",{
               pauseOnHover: false,
               theme: "colored",
@@ -55,7 +58,7 @@ const SignupForm:React.FC = () => {
               position: "top-right",
               autoClose: 3000,
               closeOnClick: true
-            })
+            });
         }
     }
   return (
@@ -70,7 +73,7 @@ const SignupForm:React.FC = () => {
                     htmlFor="name"
                     className="block text-gray-700 font-semibold mb-2"
                 >
-                    name
+                    Name
                 </label>
                 <input
                     type="name"

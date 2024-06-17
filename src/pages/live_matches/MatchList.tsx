@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { fetchMatches } from '../../context/matches/actions'
-import { useMatchDispatch, useMatchState } from '../../context/matches/context';
+import { useMatchDispatch } from '../../context/matches/context';
 import { Data, UserPreferences, fetchPreferences } from '../../context/user/actions';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { Match } from '../../types/matches';
 import { isAuth } from '../dashboard/Settings';
 import MatchCard from './MatchCard';
+import { MatchState } from '../../context/matches/reducer';
 
 
 const MatchList:React.FC = () => {
     
-    let state = useMatchState();
-
     const [isLoading,setIsLoading] = useState(false);
     
     const matchDispatch = useMatchDispatch();
@@ -62,7 +61,7 @@ const MatchList:React.FC = () => {
         console.log(data.errors);
     }
 
-    const [ matchList,setMatchList ] = useState(matches);
+    const [ matchList,setMatchList ] = useState<MatchState>();
     
     let filteredMatches;
 
@@ -80,7 +79,6 @@ const MatchList:React.FC = () => {
     }
     
     useEffect(() => {
-
         setIsLoading(true);
         try{
             const info:Data = fetchPreferences();
@@ -110,7 +108,7 @@ const MatchList:React.FC = () => {
             />
 
             <div className='w-auto mx-auto flex-row justify-between container outline-none mt-2 gap-2'>
-                {!isLoading && matchList.map((match:Match) => {
+                {!isLoading && matchList?.matches.map((match) => {
                         return <MatchCard id={match.id}/>
                     })
                 }

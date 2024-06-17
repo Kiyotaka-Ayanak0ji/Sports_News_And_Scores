@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSportsState } from '../../context/sport/context';
 import { useTeamState } from '../../context/teams/context';
-import { Preferences } from '../../types/user';
 import { Team } from '../../types/matches';
 import { Sport } from '../../types/sports';
 import { toast } from 'react-toastify';
@@ -21,7 +20,7 @@ interface Data {
 
 export const isAuth = !!localStorage.getItem("authToken");
 
-const Preferences = () => {
+const Settings = () => {
     if(!isAuth){
         return (
             <>
@@ -31,11 +30,11 @@ const Preferences = () => {
 
     const navigate = useNavigate();
     
-    const sports_state = useSportsState()
-    const teams_state = useTeamState()
+    const sports_state = useSportsState();
+    const teams_state = useTeamState();
 
-    const { sports,isLoading } = sports_state;
-    const { teams,isLoading } = teams_state;
+    let { sports,isSportsLoading } = sports_state;
+    let { teams,isTeamLoading } = teams_state;
 
     const [preferences,setPreferences] = useState<UserPreferences>({
         SelectedSports: [],
@@ -100,14 +99,8 @@ const Preferences = () => {
                                     <div aria-busy={false} className='flex items-center justify-center'>
                                         
                                         <DialogTitle as="h1" className="text-2xl leading-tight font-medium text-stone-900 dark:text-white">
-                                            Preferences
+                                            User Preferences
                                         </DialogTitle>
-
-                                        {/* <XMarkIcon
-                                            className="h-6 w-6"
-                                            onClick={() => close()}
-                                            aria-hidden="true"
-                                        /> */}
 
                                         <Button onClick={() => close()} className={'h-6 w-6'} aria-hidden={true}>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -122,7 +115,7 @@ const Preferences = () => {
                                             <hr/>
 
                                             <div className='flex flex-wrap'>
-                                                {!isLoading && sports.map((sport: Sport) => {
+                                                {!isSportsLoading && sports.map((sport: Sport) => {
                                                     <div key={sport.id}
                                                         className='flex items-center justify-between w-64'
                                                     >
@@ -132,8 +125,7 @@ const Preferences = () => {
                                                         >
                                                             {sport.name}
                                                         </label>
-
-                                                        {/* Input checkbox */}
+                                                         
                                                         <input 
                                                             id = {sport.name}
                                                             checked={preferences?.SelectedSports?.includes(sport.name)}
@@ -174,7 +166,7 @@ const Preferences = () => {
                                             </h2>
                                             <hr/>
                                             <div className='flex-wrap'>
-                                                {!isLoading && teams.map((team: Team) => {
+                                                {!isTeamLoading && teams.map((team: Team) => {
                                                     <div key={team.id}
                                                         className='flex items-center justify-between w-64'
                                                     >
@@ -183,8 +175,6 @@ const Preferences = () => {
                                                          >
                                                             {team.name}
                                                          </label>
-
-                                                        {/* Input checkbox */}
 
                                                         <input 
                                                             id = {team.name}
@@ -244,4 +234,4 @@ const Preferences = () => {
     );      
 }
 
-export default Preferences;
+export default Settings;

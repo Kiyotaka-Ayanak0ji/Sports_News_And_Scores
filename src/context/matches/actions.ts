@@ -28,8 +28,6 @@ export const fetchMatch = async(dispatch : any,id: number) => {
     
         const data:Match = await customFetch(url,"GET",true);
 
-        // dispatch({type: "FETCH_Match_SUCCESS",payload: data});
-
         console.log("Success",data);
 
         return data;

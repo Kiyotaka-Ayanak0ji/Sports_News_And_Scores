@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { ThemeContext } from '../../context/theme';
+import { Switch } from '@headlessui/react';
 
 const DarkMode = () => {
   const {theme,setTheme} = useContext(ThemeContext);
@@ -20,7 +21,7 @@ const DarkMode = () => {
   
   return (
     <div className="bg-gray-400 flex justify-between">     
-      <switch onClick={() => toggleTheme} className='items-center mr-3'>
+      <Switch onClick={() => toggleTheme} className='items-center mr-3'>
         <div>
           {theme === "dark" ? (
             <SunIcon className="h-8 w-8 shadow-lg shadow-slate-400" />
@@ -28,7 +29,7 @@ const DarkMode = () => {
             <MoonIcon className="h-6 w-6 shadow-lg shadow-slate-400" />
             )}
         </div>
-      </switch>
+      </Switch>
     </div>
   )
 }

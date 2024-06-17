@@ -1,11 +1,9 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNewsState } from "../../context/news/context";
 import { News } from "../../types/articles";
 import { Link } from "react-router-dom";
 import { fetchPreferences } from "../../context/user/actions";
 import { Team } from "../../types/matches";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 import { isAuth } from "../dashboard/Settings";
 
 interface UserPreferences {
@@ -94,32 +92,12 @@ export default function FevArticles(props: Props) {
 
   if (isLoading) {
     return (
-      <SkeletonTheme baseColor="#d1cdcd" highlightColor="#adacac">
-        <div className="overflow-y-auto h-[60vh]">
-          {Array(4)
-            .fill(0)
-            .map((ele, idx) => {
-              return (
-                <div
-                  key={idx}
-                  className="bg-white dark:hover:bg-slate-600 hover:bg-slate-200 dark:bg-slate-800 rounded-md mt-3 p-3"
-                >
-                  <h1 className="font-bold text-gray-900 dark:text-white">
-                    <Skeleton height={30} />
-                  </h1>
-                  <p className="text-gray-800 mt-4 dark:text-gray-300">
-                    <Skeleton count={4} />
-                  </p>
-                  <Skeleton
-                    width={200}
-                    height={35}
-                    className="mt-3 block mx-auto"
-                  />
-                </div>
-              );
-            })}
-        </div>
-      </SkeletonTheme>
+      <span className="mt-2">
+        <p className="text-l text-stone-700">
+          Loading...
+        </p>
+        <progress value={10} aria-busy={true}/>
+      </span>
     );
   }
 

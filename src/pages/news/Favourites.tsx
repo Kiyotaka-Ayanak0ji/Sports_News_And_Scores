@@ -5,10 +5,11 @@ import { Team } from "../../types/matches";
 import { useSportsState } from "../../context/sport/context";
 import { Sport } from "../../types/sports";
 import { Fragment } from "react";
-import { Listbox, ListboxOptions, Transition } from "@headlessui/react";
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { fetchPreferences } from "../../context/user/actions";
 import { isAuth } from "../dashboard/Settings";
+
 
 interface Data {
   preferences: UserPreferences,
@@ -38,10 +39,6 @@ export default function Favourites() {
   const [optionFevTeam, setOptionFevTeam] = useState(
     teams.map((team: Team) => team.name)
   );
-
-  const isLoggedIn = !!localStorage.getItem("userData");
-
-  // const { isOpen } = useContext(CustomizeContext);
 
   const settingOptionState = async () => {
     if (isAuth) {
@@ -81,7 +78,7 @@ export default function Favourites() {
 
   useEffect(() => {
     settingOptionState();
-  }, [isOpen, fevSport, teams, isLoading]);
+  }, [open, fevSport, teams, isLoading]);
 
   return (
     <>
@@ -153,7 +150,7 @@ export default function Favourites() {
                     aria-hidden="true"
                   />
                 </span>
-              </Listbox.Button>
+              </ListboxButton>
               <Transition
                 as={Fragment}
                 leave="transition ease-in duration-100"
@@ -199,7 +196,6 @@ export default function Favourites() {
         </div>
       </div>
 
-      {/* FAVOURITE ARTICLES */}
       <FevArticles fevSport={fevSport} fevTeam={fevTeam} />
     </>
   );

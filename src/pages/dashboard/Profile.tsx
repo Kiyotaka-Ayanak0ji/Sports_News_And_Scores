@@ -28,7 +28,10 @@ const Profile = (props: any) => {
           >
             {navigation.map((items:any) => {
               <MenuItem>
-                    <Button onClick={() => <Navigate to={`/${items.href}`} replace />} className="group flex w-full items-center rounded-lg py-1.5 px-3 data-[focus]:bg-white/10">
+                    <Button 
+                      onClick={() => <Navigate to={`/${items.href}`} replace />} 
+                      className="group flex w-full items-center rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
+                    >
                       {items.name}
                     </Button>
               </MenuItem>

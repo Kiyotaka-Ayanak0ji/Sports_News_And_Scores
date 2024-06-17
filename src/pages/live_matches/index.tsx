@@ -3,8 +3,6 @@ import { useMatchDispatch } from "../../context/matches/context";
 import { fetchMatches } from "../../context/matches/actions";
 import ErrorBoundary from "../../ErrorBoundary";
 const MatchList = React.lazy(() => import("./MatchList"));
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 const LiveMatch:React.FC = () => {
   const dispatch = useMatchDispatch();
@@ -21,15 +19,7 @@ const LiveMatch:React.FC = () => {
         <Suspense
           fallback={
             <div className="ml-4 flex gap-4 overflow-x-auto">
-              <SkeletonTheme baseColor="#d1cdcd" highlightColor="#adacac">
-                {Array(4)
-                  .fill(0)
-                  .map((ele, index) => {
-                    return (
-                      <Skeleton key={index} height={140} width={250}></Skeleton>
-                    );
-                  })}
-              </SkeletonTheme>
+              <span>Loading...<progress value={10} aria-busy={true}/></span>
             </div>
           }
         >

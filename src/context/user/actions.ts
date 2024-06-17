@@ -5,7 +5,7 @@ import { customFetch } from "../../utils/middleware";
 
 export interface Data {
     preferences: UserPreferences;
-    errors? : string;
+    errors?: string;
 }
 
 export interface UserPreferences {
@@ -18,23 +18,16 @@ type Reset = {
     current_password: string
 }
 
-// type UserBody = {
-//     name: string;
-//     email: string;
-//     password: string;
-// }
-
-export const fetchUser = async (bod:UserLogin) => {
-    try{
+export const fetchUser = async (bod: UserLogin) => {
+    let data;
+    try {
         const url = `${API_KEY}/user/sign_in`;
 
-        const data:User = await customFetch(url,'POST',false,bod);
-        
-        return data;
+        data = await customFetch(url, 'POST', false, bod);
     }
-    catch(error){
+    catch (error) {
         console.log(error);
-        toast.error("Error in fetching user details !",{
+        toast.error("Error in fetching user details !", {
             pauseOnHover: false,
             theme: "colored",
             delay: 5000,
@@ -46,23 +39,29 @@ export const fetchUser = async (bod:UserLogin) => {
             closeOnClick: true
         });
     }
-}
 
-export const createUser = async(dispatch: any,user: UserLogin) => {
+    localStorage.setItem("authToken", data.auth_token);
+    localStorage.setItem("userData", JSON.stringify(data.user));
     
-    dispatch({type:'FETCH_USER_REQUEST'});
+    return data;
+}
 
-    try{   
+export const createUser = async (dispatch: any, user: UserLogin) => {
+
+    dispatch({ type: 'FETCH_USER_REQUEST' });
+    
+    let response;
+
+    try {
         const url = `${API_KEY}/users`;
-        
-        const response = await customFetch(url,"POST",false,user);
 
-        dispatch({type: 'FETCH_USER_SUCCESS',payload: response.json()})
-        return response;
+        response = await customFetch(url, "POST", false, user);
+
+        dispatch({ type: 'FETCH_USER_SUCCESS', payload: response.user });
 
     }
-    catch(error){
-        toast.error("Internal Server Error",{
+    catch (error) {
+        toast.error("Internal Server Error", {
             pauseOnHover: false,
             theme: "colored",
             delay: 5000,
@@ -74,51 +73,55 @@ export const createUser = async(dispatch: any,user: UserLogin) => {
             closeOnClick: true
         });
     }
-
+    
+    localStorage.setItem("authToken", response.auth_token);
+    localStorage.setItem("userData", JSON.stringify(response.user));
+    
+    return response;
 }
 
-export const updateUserPreferences = async(preferences:Preferences) => {
-    try{
+export const updateUserPreferences = async (preferences: Preferences) => {
+    try {
         const url = `${API_KEY}/user/preferences`
 
-        const response = await customFetch(url,"PATCH",true,preferences);
+        const response = await customFetch(url, "PATCH", true, preferences);
 
-        if(!response.ok){
+        if (!response.ok) {
             toast.error("Failed to set preferences");
         }
-        else{
+        else {
             return await fetchPreferences();
         }
     }
-    catch(error){
+    catch (error) {
         console.log(error);
         toast.error("Error in updating user preferences");
     }
 }
 
-export const updateUserPassword = async(password_rst: Reset) => {
-    try{
+export const updateUserPassword = async (password_rst: Reset) => {
+    try {
         const url = `${API_KEY}/user/password`;
 
-        return await customFetch(url,"PATCH",true,password_rst)
+        return await customFetch(url, "PATCH", true, password_rst)
     }
-    catch(error){
+    catch (error) {
         console.log(error);
         toast.error("Error in updating user password");
     }
-} 
+}
 
-export const fetchPreferences = async() => {
-    try{
+export const fetchPreferences = async () => {
+    try {
         const url = `${API_KEY}/user/preferences`;
-        
-        const data:Data = await customFetch(url,"GET",true);
+
+        const data: Data = await customFetch(url, "GET", true);
 
         return data;
     }
-    catch(error){
+    catch (error) {
         console.error(error);
-        toast.error("Failed to fetch user preferences",{
+        toast.error("Failed to fetch user preferences", {
             pauseOnHover: false,
             theme: "colored",
             delay: 5000,
