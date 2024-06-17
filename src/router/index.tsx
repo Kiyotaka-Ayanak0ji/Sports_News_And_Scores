@@ -50,10 +50,14 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Display />,
+    element: (
+      <ProtectedRoute>
+        <Display />
+      </ProtectedRoute>
+    ),
     children: [
       {
-        path: "/dashboard",
+        path: "",
         element: (
           <>
             <LiveMatch />

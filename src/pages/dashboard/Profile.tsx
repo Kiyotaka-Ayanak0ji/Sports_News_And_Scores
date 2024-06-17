@@ -1,7 +1,12 @@
 import React from 'react'
-import { Button, Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
-import { Navigate } from 'react-router-dom'
+import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
+import { Link } from 'react-router-dom'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
+
+type nav_type = {
+  name: string;
+  href: string;
+}
 
 const Profile = (props: any) => {
 
@@ -26,14 +31,17 @@ const Profile = (props: any) => {
             anchor="bottom end"
             className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white [--anchor-gap:var(--spacing-1)] focus:outline-none"
           >
-            {navigation.map((items:any) => {
-              <MenuItem>
-                    <Button 
-                      onClick={() => <Navigate to={`/${items.href}`} replace />} 
+            {navigation.map((items:nav_type) => {
+              <MenuItem key={items.name}>
+                  { ({active}) => (
+                    <Link
+                      to={items.href} 
                       className="group flex w-full items-center rounded-lg py-1.5 px-3 data-[focus]:bg-white/10"
                     >
-                      {items.name}
-                    </Button>
+                  )}
+                    {items.name}
+                  </Link>
+                )
               </MenuItem>
               })
             }             

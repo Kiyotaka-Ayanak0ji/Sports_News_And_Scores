@@ -1,6 +1,6 @@
 import { Bounce, toast } from "react-toastify";
 import { API_KEY } from "../../config/constants"
-import { Preferences, User, UserLogin } from "../../types/user";
+import { Preferences, UserLogin } from "../../types/user";
 import { customFetch } from "../../utils/middleware";
 
 export interface Data {
@@ -18,12 +18,18 @@ type Reset = {
     current_password: string
 }
 
-export const fetchUser = async (bod: UserLogin) => {
+export const fetchUser = async (dispatch:any,bod: UserLogin) => {
+    
     let data;
+    
     try {
+        dispatch({type:"FETCH_USER_REQUEST"});
+
         const url = `${API_KEY}/user/sign_in`;
 
         data = await customFetch(url, 'POST', false, bod);
+
+        dispatch({type:"FETCH_SUCCESS_REQUEST",payload: data.user});
     }
     catch (error) {
         console.log(error);
@@ -48,11 +54,11 @@ export const fetchUser = async (bod: UserLogin) => {
 
 export const createUser = async (dispatch: any, user: UserLogin) => {
 
-    dispatch({ type: 'FETCH_USER_REQUEST' });
-    
     let response;
-
+    
     try {
+        dispatch({ type: 'FETCH_USER_REQUEST' });
+
         const url = `${API_KEY}/users`;
 
         response = await customFetch(url, "POST", false, user);

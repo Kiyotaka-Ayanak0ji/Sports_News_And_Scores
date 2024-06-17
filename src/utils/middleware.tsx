@@ -28,30 +28,38 @@ export const customFetch = async(url:string ,option: request_type, authRequired?
         }
     }
     else{
-        response = await fetch(url,{
-            method: option,
-            headers: {
-                "Content-Type": "Application/json",
-            },
-        })
+        if(body){
+            response = await fetch(url,{
+                method: option,
+                headers: {
+                    "Content-Type": "Application/json",
+                },
+                body: JSON.stringify(body)
+            })
+        }
+        else{
+            response = await fetch(url,{
+                method: option,
+                headers: {
+                    "Content-Type": "Application/json",
+                },
+            })
+        }
     }
 
     //validation logic...
     if(response.ok){
         try{
             const data = await response.json();
-
-            //Store the auth token
-            localStorage.setItem("authToken",token);
-
+           
             //200: success
             console.log(data);
-
-            return data;
-        
+            
+            return response;
+            
         }catch(error){
             console.log(error);
-            const msg = response.errors || "Internal Server Error";
+            const msg = "Internal Server Error";
             toast.error(msg,{
                 pauseOnHover: false,
                 theme: "colored",
@@ -64,6 +72,8 @@ export const customFetch = async(url:string ,option: request_type, authRequired?
                 closeOnClick: true
             })
         }
+        //Store the auth token
+        localStorage.setItem("authToken",token);
     }
     else{
         throw new Error(response.errors);

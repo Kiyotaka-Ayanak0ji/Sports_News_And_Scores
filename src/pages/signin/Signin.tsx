@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { fetchUser } from '../../context/user/actions';
 import { Bounce, toast } from 'react-toastify';
 import { User } from '../../types/user';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useUserDispatch } from '../../context/user/context';
 
 const SigninForm: React.FC = () => {
   
@@ -22,8 +22,10 @@ const SigninForm: React.FC = () => {
         password: password
       }
 
+      const dispatch = useUserDispatch();
+
       //Get response..
-      const data: User = await fetchUser(body);
+      const data: User = await fetchUser(dispatch,body);
 
       if (data.errors) {
         toast.error("Authentication Failure", {
@@ -38,6 +40,9 @@ const SigninForm: React.FC = () => {
           closeOnClick: true
         })
       }
+
+      localStorage.setItem("authToken",data.auth_token);
+      localStorage.setItem("userItem",JSON.stringify(data.user));
 
       navigate('/dashboard');
 

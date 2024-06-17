@@ -28,19 +28,6 @@ const Navbar = () => {
     return (
     <>
         <div className='flex container'>
-            
-            <ToastContainer
-                position='top-right'
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                pauseOnFocusLoss={false}
-                rtl={false}
-                draggable
-                theme={"colored"}
-                transition = {Bounce}
-            />
 
             <div className="absolute mb-2 flex-row bg-gray-400 dark:bg-stone-500 font-semibold text-black dark:text-white">
                 
