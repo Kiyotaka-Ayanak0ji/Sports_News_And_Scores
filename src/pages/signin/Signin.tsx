@@ -35,20 +35,21 @@ const SigninForm: React.FC = () => {
         throw new Error("Sign-in failed");
       }
 
-    toast.success(`Welcome ${response.user.name}`,{
-      closeOnClick: true,
-      delay: 5000,
-      theme: "colored",
-      position: "top-right",
-      autoClose: 5000,
-      pauseOnHover: false,
-      pauseOnFocusLoss: false,
-      progress: undefined,
-    })
-
+      
       // extract the response body as JSON data
       const data = await response.json();
-
+      
+      toast.success(`Welcome ${data.user.name}`,{
+        closeOnClick: true,
+        delay: 5000,
+        theme: "colored",
+        position: "top-right",
+        autoClose: 5000,
+        pauseOnHover: false,
+        pauseOnFocusLoss: false,
+        progress: undefined,
+      })
+      
       // After successful signin, first we will save the token in localStorage
       localStorage.setItem("authToken", data.auth_token);
       localStorage.setItem("userData", JSON.stringify(data.user));
