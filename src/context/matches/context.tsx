@@ -1,26 +1,24 @@
-import React, { useReducer , createContext } from "react";
-import { MatchActions , MatchState , reducer , initialState } from "./reducer";
+import React, { createContext, useContext, useReducer } from "react";
+import { MatchesState } from "./types";
+import { reducer, initialState, MatchesActions } from "./reducer";
 
-export const MatchStateContext = createContext<MatchState | undefined> (undefined);
+const MatchesStateContext = createContext<MatchesState >(initialState);
 
-export type MatchDispatch = React.Dispatch<MatchActions>
+const MatchesDispatchContext = createContext<React.Dispatch<MatchesActions> | undefined>(undefined);
 
-export const MatchDispatchContext = createContext<MatchDispatch | undefined> (
-    undefined
-)
-export const MatchProvider:React.FC<React.PropsWithChildren> = ({ children }) => {
-    const [state,dispatch] = useReducer(reducer,initialState);
+export const MatchesProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
+{
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-    return(
-        <MatchStateContext.Provider value={state}>
-            <MatchDispatchContext.Provider value={dispatch}>
-                { children }
-            </MatchDispatchContext.Provider>
-        </MatchStateContext.Provider>
-    )
-}
+  return (
+    <MatchesStateContext.Provider value={state}>
+      <MatchesDispatchContext.Provider value={dispatch}>
+        {children}
+      </MatchesDispatchContext.Provider>
+    </MatchesStateContext.Provider>
+  );
+};
 
+export const useMatchesState = () => useContext(MatchesStateContext);
 
-export const useMatchState = () => createContext(MatchStateContext);
-
-export const useMatchDispatch = () => createContext(MatchDispatchContext);
+export const useMatchesDispatch = () => useContext(MatchesDispatchContext);

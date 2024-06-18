@@ -1,39 +1,31 @@
-import React from "react"
-import { RouterProvider } from "react-router-dom"
-import router from "./router"
-import { UserProvider } from "./context/user/context"
-import { NewsProvider } from "./context/news/context"
-import { MatchProvider } from "./context/matches/context"
-import { ToastContainer } from "react-toastify"
-import { TeamProvider } from "./context/teams/context"
-import { SportProvider } from "./context/sport/context"
+import { RouterProvider } from "react-router-dom";
+import Router from "./routes";
+import { Suspense } from "react";
+import { MatchesProvider } from "./context/matches/context";
+import { ArticlesProvider } from "./context/articles/context";
+import { PreferencesProvider } from "./context/preferences/context";
+import { SportProvider } from "./context/sports/context";
+import { TeamsProvider } from "./context/teams/context";
 
-function App() {
+const App = () => {
   return (
-    <div className={`w-full mx-auto`}>
-      <UserProvider>
-        <NewsProvider>
-          <MatchProvider>
-            <TeamProvider>
-              <SportProvider>
-                <RouterProvider router={router} />
-              </SportProvider>
-            </TeamProvider>
-          </MatchProvider>
-        </NewsProvider>
-      </UserProvider>
-      <ToastContainer
-        position='top-right'
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        pauseOnFocusLoss={false}
-        rtl={false}
-        theme={"colored"}
-      />
+    <div
+      className={`mx-auto h-screen flex flex-col px-4py-2 `}
+    >
+      <TeamsProvider>
+        <SportProvider>
+          <PreferencesProvider>
+            <MatchesProvider>
+              <ArticlesProvider>
+                <Suspense fallback={<>Loading...</>}>
+                  <RouterProvider router={Router} />
+                </Suspense>
+              </ArticlesProvider>
+            </MatchesProvider>
+          </PreferencesProvider>
+        </SportProvider>
+      </TeamsProvider>
     </div>
-  )
-}
-
-export default App
+  );
+};
+export default App;

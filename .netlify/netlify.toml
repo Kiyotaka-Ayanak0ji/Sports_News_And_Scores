@@ -1,5 +1,5 @@
 functionsDirectory = "/root/sports-center/netlify/functions"
-functionsDirectoryOrigin = "ui"
+functionsDirectoryOrigin = "config-v1"
 plugins = []
 headers = []
 redirects = []
@@ -10,9 +10,9 @@ redirects = []
 
 [build]
 publish = "/root/sports-center/dist"
-publishOrigin = "ui"
+publishOrigin = "config"
 command = "npm run build"
-commandOrigin = "ui"
+commandOrigin = "config"
 functions = "/root/sports-center/netlify/functions"
 
 [build.environment]

@@ -1,127 +1,102 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import { fetchUser } from '../../context/user/actions';
-import { Bounce, toast } from 'react-toastify';
-import { User } from '../../types/user';
-import { useUserDispatch } from '../../context/user/context';
+import React from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { API_ENDPOINT } from "../../config/constants.js";
+
+type Inputs = {
+  email: string;
+  password: string;
+};
 
 const SigninForm: React.FC = () => {
-  
-  const [email, setUseremail] = useState('');
-  const [password, setPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+  } = useForm<Inputs>();
+  const navigate = useNavigate();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    
-    const navigate = useNavigate();
-    event.preventDefault();
-
-    try {
-
-      const body = {
-        email: email,
-        password: password
-      }
-
-      const dispatch = useUserDispatch();
-
-      //Get response..
-      const data: User = await fetchUser(dispatch,body);
-
-      if (data.errors) {
-        toast.error("Authentication Failure", {
-          pauseOnHover: false,
-          theme: "colored",
-          delay: 5000,
-          transition: Bounce,
-          hideProgressBar: false,
-          pauseOnFocusLoss: true,
-          position: "top-right",
-          autoClose: 3000,
-          closeOnClick: true
-        })
-      }
-
-      localStorage.setItem("authToken",data.auth_token);
-      localStorage.setItem("userItem",JSON.stringify(data.user));
-
-      navigate('/dashboard');
-
-    } catch (error) {
-      console.error(error);
-      toast.error("Internal Server Error", {
-        pauseOnHover: false,
-        theme: "colored",
-        delay: 5000,
-        transition: Bounce,
-        hideProgressBar: false,
-        pauseOnFocusLoss: true,
-        position: "top-right",
-        autoClose: 3000,
-        closeOnClick: true
-      })
+  // Then we will define the handle submit function
+  const onSubmit: SubmitHandler<Inputs> = async ({ email, password }) => {
+    const message = localStorage.getItem("message");
+    if (message) {
+      localStorage.setItem("message", "");
     }
-  }
+    {message && <div className="text-red-500 text-center">{message}</div>}
+    
+    try {
+      const response = await fetch(`${API_ENDPOINT}/users/sign_in`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json",},
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Sign-in failed");
+      }
+
+      console.log("Sign-in successful");
+
+      // extract the response body as JSON data
+      const data = await response.json();
+
+      // After successful signin, first we will save the token in localStorage
+      localStorage.setItem("authToken", data.auth_token);
+      localStorage.setItem("userData", JSON.stringify(data.user));
+      // console.log("data.token: ", data.auth_token);
+      // console.log("authToken: ", localStorage.getItem("authToken"));
+      // redirect to the dashboard page using the navigate function
+      navigate("/account");
+    } catch (error) {
+      console.error("Sign-in failed:", error);
+      localStorage.setItem("message", "Sign in failed. Please try again.");
+      navigate("/signin");
+    }
+  };
 
   return (
-    <div>
-      <h1 className='top-32 ml-48 left-1/3 font-bold text-4xl dark:text-amber-300/60 text-black inline-flex m-2 absolute'>
-        Sign In
-      </h1>
-      <div className='w-96 h-96 absolute top-1/4 ml-60 left-80 items-center justify-center rounded-lg shadow-lg shadow-slate-400'>
-        <form onSubmit={() => handleSubmit}>
-          <div className='m-2 h-auto flex-col items-center justify-center'>
-            <label
-              htmlFor="email"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={(e) => { setUseremail(e.target.value) }}
-              placeholder="Enter your email"
-              required
-              className="transition ease-linear delay-100 w-full rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none border-2 focus:border-blue-600 focus:shadow-outline-blue"
-            />
-          </div>
-          <div className="m-2 h-auto flex-col items-center justify-center">
-            <label
-              htmlFor="password"
-              className="block text-gray-700 font-semibold mb-2"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={(e) => { setPassword(e.target.value) }}
-              placeholder="Enter your password"
-              required
-              className="transition delay-100 ease-linear w-full border-2 rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-600 focus:shadow-outline-blue"
-            />
-          </div>
-          <div className="w-fit m-2 items-center justify-center inline">
-            <button
-              type="submit"
-              className="w-auto transition delay-100 ease-linear bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 ring-zinc-500"
-            >
-              Sign In
-            </button>
-          </div>
-        </form>
-        <div className='mt-2 m-2 absolute flex items-center justify-center'>
-          <Link to='/signup' className="transition ease-linear text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-white-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center" id="backToHomeButton">
-            New Here? SignUp
-          </Link>
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <label
+          htmlFor="Email"
+          className="block text-gray-700 font-semibold mb-2"
+        >
+          Email
+        </label>
+        <input
+          type="text"
+          id="email"
+          autoFocus
+          {...register("email", { required: true })}
+          placeholder="Enter your email"
+          className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
+        />
       </div>
-    </div>
+      <div className="mt-4">
+        <label
+          htmlFor="password"
+          className="block text-gray-700 font-semibold mb-2"
+        >
+          Password
+        </label>
+        <input
+          type="password"
+          id="password"
+          autoFocus
+          {...register("password", { required: true })}
+          placeholder="Enter your password"
+          className="w-full border rounded-md py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:shadow-outline-blue"
+        />
+      </div>
+      <div className="mt-8">
+        <button
+          type="submit"
+          className="w-full bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline-gray"
+        >
+          Sign In
+        </button>
+      </div>
+    </form>
   );
-}
+};
 
 export default SigninForm;
