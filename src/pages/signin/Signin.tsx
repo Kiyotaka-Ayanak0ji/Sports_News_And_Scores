@@ -2,6 +2,7 @@ import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "../../config/constants.js";
+import { toast } from 'react-toastify';
 
 type Inputs = {
   email: string;
@@ -34,7 +35,16 @@ const SigninForm: React.FC = () => {
         throw new Error("Sign-in failed");
       }
 
-      console.log("Sign-in successful");
+    toast.success(`Welcome ${response.user.name}`,{
+      closeOnClick: true,
+      delay: 5000,
+      theme: "colored",
+      position: "top-right",
+      autoClose: 5000,
+      pauseOnHover: false,
+      pauseOnFocusLoss: false,
+      progress: undefined,
+    })
 
       // extract the response body as JSON data
       const data = await response.json();
