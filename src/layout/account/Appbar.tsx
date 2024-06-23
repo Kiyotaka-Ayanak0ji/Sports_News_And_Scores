@@ -7,6 +7,7 @@ import { ThemeContext } from "../../context/theme";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import Articles from "../../components/Articles";
 import LiveMatch from "../../components/Matches";
+import Favourites from "../../components/Articles/Favourites";
 
 const intial = [{ name: "Sign out", href: "/logout" }];
 
@@ -127,11 +128,15 @@ const Navbar = () => {
           </div>
         </div>
       </Disclosure>
-      <div>
-        <LiveMatch />
-        <br />
-        <br />
-        <Articles />
+      {/* Main */}
+      <div 
+        className="mx-auto w-full h-full items-center justify-between 
+        flex bg-gray-400 rounded-none">
+          <LiveMatch/>
+          <div className="container flex w-full h-auto items-center justify-center">
+            <Articles/>
+            <Favourites/>
+          </div>
       </div>
     </>
   );

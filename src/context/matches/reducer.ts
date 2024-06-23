@@ -1,41 +1,58 @@
-import { Match, MatchesState } from './types';
+import { Team } from "../../types/matches"
 
-export const initialState: MatchesState = {
-  matches: [],
-  isLoading: false,
-  isError: false,
-  errorMessage: ''
-};
-
-// Then I'll define a new type called `ProjectsActions`
-// for all possible combimations of action objects.
-
-export type MatchesActions =
-  | { type: 'FETCH_MATCHES_REQUEST' }
-  | { type: 'FETCH_MATCHES_SUCCESS'; payload: Match[] }
-  | { type: 'FETCH_MATCHES_FAILURE'; payload: string }
-
-export const reducer = (state:  MatchesState = initialState, action: MatchesActions): MatchesState => {
-  switch (action.type) {
-    case "FETCH_MATCHES_REQUEST":
-      return {
-        ...state,
-        isLoading: true
-      };
-    case "FETCH_MATCHES_SUCCESS":
-      return {
-        ...state,
-        isLoading: false,
-        matches: action.payload,
-      };
-    case "FETCH_MATCHES_FAILURE":
-      return {
-        ...state,
-        isLoading: false,
-        isError: true,
-        errorMessage: action.payload
-      };
-    default:
-      return state;
-  }
+export type Match = {
+    id: number,
+    name: string,
+    location: string,
+    sportName: string,
+    endsAt: string,
+    isRunning: boolean,
+    teams: Team[]
 }
+
+export interface MatchState {
+    matches: Match[],
+    isLoading: boolean,
+    isError: boolean,
+    errorMessage: string
+}
+
+export const initialState = {
+    matches: [],
+    isLoading: false,
+    isError: false,
+    errorMessage: ""
+}
+
+export type MatchActions = 
+    | {type: "FETCH_MATCHES_REQUEST"}
+    | {type: "FETCH_MATCHES_FAILURE", payload: string}
+    | {type: "FETCH_MATCHES_SUCCESS", payload: Match[]};
+
+export const reducer = (
+    state: MatchState,
+    actions: MatchActions
+): MatchState => {
+    switch(actions.type){
+        case "FETCH_MATCHES_REQUEST":
+            return {
+                ...state,
+                isLoading: true
+            }
+        case "FETCH_MATCHES_FAILURE":
+            return{
+                ...state,
+                isError: true,
+                isLoading: false,
+                errorMessage: actions.payload
+            }
+        case "FETCH_MATCHES_SUCCESS":
+            return{
+                ...state,
+                isLoading: false,
+                matches: actions.payload
+            }
+        default:
+            return state;
+    }
+};

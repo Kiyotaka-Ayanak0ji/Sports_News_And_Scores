@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+  @apply h-full
+}
+
+.body{
+  @apply h-full
+}
+
 .dark {
-  @apply bg-slate-800 text-zinc-50;
+  @apply bg-stone-800 text-zinc-400
+}
+
+.light{
+  @apply bg-white text-black
 }

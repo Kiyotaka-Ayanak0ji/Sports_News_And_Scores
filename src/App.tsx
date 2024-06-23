@@ -1,30 +1,31 @@
 import { RouterProvider } from "react-router-dom";
 import Router from "./routes";
 import { Suspense } from "react";
-import { MatchesProvider } from "./context/matches/context";
-import { ArticlesProvider } from "./context/articles/context";
-import { PreferencesProvider } from "./context/preferences/context";
-import { SportProvider } from "./context/sports/context";
-import { TeamsProvider } from "./context/teams/context";
+import { UserProvider } from "./context/user/context";
+import { MatchProvider } from "./context/matches/context";
+import { TeamProvider } from "./context/teams/context";
+import { SportProvider } from "./context/sport/context";
+import { NewsProvider } from "./context/news/context";
 
 const App = () => {
   return (
     <div
       className={`mx-auto h-screen flex flex-col px-4py-2 `}
     >
-      <TeamsProvider>
-        <SportProvider>
-          <PreferencesProvider>
-            <MatchesProvider>
-              <ArticlesProvider>
+      <UserProvider>
+        
+        <MatchProvider>
+          <TeamProvider>
+            <SportProvider>
+              <NewsProvider>
                 <Suspense fallback={<>Loading...</>}>
                   <RouterProvider router={Router} />
                 </Suspense>
-              </ArticlesProvider>
-            </MatchesProvider>
-          </PreferencesProvider>
-        </SportProvider>
-      </TeamsProvider>
+              </NewsProvider>
+            </SportProvider>
+          </TeamProvider>
+        </MatchProvider>
+      </UserProvider>
     </div>
   );
 };

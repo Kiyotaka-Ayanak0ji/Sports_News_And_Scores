@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { API_ENDPOINT } from "../../config/constants";
+import { API_KEY } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {  Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { updateUserPassword } from "../../context/user/actions";
 
 type ChangePasswordFormValues = {
   currentPassword: string;
@@ -32,18 +33,11 @@ const ChangePassword: React.FC = () => {
     const { currentPassword, newPassword } = data;
 
     try {
-      const response = await fetch(`${API_ENDPOINT}/user/password`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-        },
-        body: JSON.stringify({
-          current_password: currentPassword,
-          new_password: newPassword,
-        }),
-      });
-
+      const response = await updateUserPassword({
+        current_password: currentPassword,
+        new_password: newPassword
+      })
+      
       if (response.ok) {
         setError(null);
         setMessage("Password changed successfully");

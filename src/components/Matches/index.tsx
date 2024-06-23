@@ -1,17 +1,16 @@
-
 import { useEffect } from 'react'
-import { useMatchesDispatch } from '../../context/matches/context'
-import { fetchMatches } from '../../context/matches/action'
+import { useMatchDispatch } from '../../context/matches/context'
+import { fetchMatches } from '../../context/matches/actions'
 import ErrorBoundary from '../ErrorBoundary'
 import { Suspense } from 'react'
-import MatchList from './MatchList'
+import MatchList  from './MatchList'
 
-export default function LiveMatch() {
-  const matchDispatch = useMatchesDispatch()
+const LiveMatch = () => {
+  const dispatch = useMatchDispatch()
 
   useEffect(()=>{
-    fetchMatches(matchDispatch)
-  },[matchDispatch])
+    fetchMatches(dispatch)
+  },[dispatch]);
 
   return (
     <div>
@@ -26,3 +25,5 @@ export default function LiveMatch() {
     </div>
   )
 }
+
+export default LiveMatch;
