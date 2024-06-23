@@ -4,10 +4,11 @@ import { fetchMatches } from '../../context/matches/actions'
 import ErrorBoundary from '../ErrorBoundary'
 import { Suspense } from 'react'
 import MatchList  from './MatchList'
+import React from 'react'
 
-const LiveMatch = () => {
-  const dispatch = useMatchDispatch()
-
+const LiveMatch:React.FC = () => {
+  const dispatch = useMatchDispatch();
+  
   useEffect(()=>{
     fetchMatches(dispatch)
   },[dispatch]);

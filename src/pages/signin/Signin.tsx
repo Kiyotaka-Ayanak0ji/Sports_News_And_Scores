@@ -20,9 +20,9 @@ const SigninForm:React.FC = () => {
             }
             //Get response..
             const dispatch = useUserDispatch();
-            const data:User = await fetchUser(dispatch,body);
+            const data:User|undefined = await fetchUser(dispatch,body);
             
-            if(data.errors){
+            if(data?.errors || !data){
               toast.error("Error Occured, failed to sign in",{
                 pauseOnHover: false,
                 theme: "colored",

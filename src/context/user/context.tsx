@@ -1,7 +1,7 @@
-import React, { createContext, useReducer, useState } from 'react'
+import React, { createContext, useContext, useReducer } from 'react'
 import { UserActions, UserState, initialState, reducer } from './reducer';
 
-const UserStateContext = createContext<UserState|undefined>(undefined);
+const UserStateContext = createContext<UserState>(initialState);
 
 export type UserDispatch = React.Dispatch<UserActions>;
 
@@ -18,7 +18,7 @@ export const UserProvider:React.FC<React.PropsWithChildren> = ({ children }) => 
             </UserDispatchContext.Provider>
         </UserStateContext.Provider>
     );
-};
+}
 
-export const useUserState = () => useState(UserStateContext);
-export const useUserDispatch = () => useState(UserDispatchContext);
+export const useUserState = () => useContext(UserStateContext);
+export const useUserDispatch = () => useContext(UserDispatchContext);

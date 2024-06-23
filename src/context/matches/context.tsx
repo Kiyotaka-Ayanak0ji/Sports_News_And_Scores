@@ -1,7 +1,7 @@
-import React, { useReducer , createContext } from "react";
+import React, { useReducer , createContext, useContext } from "react";
 import { MatchActions , MatchState , reducer , initialState } from "./reducer";
 
-export const MatchStateContext = createContext<MatchState | undefined> (undefined);
+export const MatchStateContext = createContext<MatchState> (initialState);
 
 export type MatchDispatch = React.Dispatch<MatchActions>
 
@@ -21,6 +21,6 @@ export const MatchProvider:React.FC<React.PropsWithChildren> = ({ children }) =>
 }
 
 
-export const useMatchState = () => createContext(MatchStateContext);
+export const useMatchState = () => useContext(MatchStateContext);
 
-export const useMatchDispatch = () => createContext(MatchDispatchContext);
+export const useMatchDispatch = () => useContext(MatchDispatchContext);

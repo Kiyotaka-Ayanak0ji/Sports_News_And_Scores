@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Button , Dialog,  DialogPanel, DialogTitle } from '@headlessui/react'
 import { News } from '../../types/articles';
+import React from 'react';
+
 
 const Article:React.FC<Omit<News,'id'|'teams'>> = (props) => {
-
+  
   const { title , thumbnail, content , date , summary , sport } = props; 
-
+  
   const [isOpen,setIsOpen] = useState(false);
-
-  useEffect(() => {
-    Modal();
-  },[isOpen]);
-
-  function Modal(){
+  
+  const Modal:React.FC = () => {
     return(
       <Dialog onClose={() => setIsOpen(false)} open={isOpen} as="div" className="relative z-10 focus:outline-none">
         <div className='fixed inset-0 z-10 w-screen overflow-y-auto'>
@@ -44,7 +42,7 @@ const Article:React.FC<Omit<News,'id'|'teams'>> = (props) => {
       </Dialog>
     )
   }
-
+  
   const getFormattedDate = (date:string) => {
     let result = "";
 
@@ -74,28 +72,31 @@ const Article:React.FC<Omit<News,'id'|'teams'>> = (props) => {
   }
 
   return (
-    <div className='flex-row dark:bg-zinc-600 dark:text-cyan-300 text-neutral-500 bg-white shadow-lg shadow-slate-400'>
-      <div className='mt-2 mb-2 w-11/12 h-40'>
-        <h2 className='absolute left-0 flex text-lg font-bold text-black'>
-          {title}
-        </h2>
-        <p className='flex absolute left-0 text-base text-slate-500'>
-          {summary.substring(0,200)}
-        </p>
-        <p className='absolute left-0 flex font-light text-sm'>
-          {sport.name}
-          {getFormattedDate(date)}
-        </p>
-        <a
-          onClick={() => setIsOpen(true)} 
-          className='text-sm text-slate-400 hover:underline'>
-          Read More...
-        </a>
+    <>
+      <div className='flex-row dark:bg-zinc-600 dark:text-cyan-300 text-neutral-500 bg-white shadow-lg shadow-slate-400'>
+        <div className='mt-2 mb-2 w-11/12 h-40'>
+          <h2 className='absolute left-0 flex text-lg font-bold text-black'>
+            {title}
+          </h2>
+          <p className='flex absolute left-0 text-base text-slate-500'>
+            {summary.substring(0,200)}
+          </p>
+          <p className='absolute left-0 flex font-light text-sm'>
+            {sport.name}
+            {getFormattedDate(date)}
+          </p>
+          <a
+            onClick={() => setIsOpen(true)} 
+            className='text-sm text-slate-400 hover:underline'>
+            Read More...
+          </a>
+        </div>
+        <div className='absolute right-0 h-auto w-auto'>
+          <img src={thumbnail} alt='bad-img' className='h-14 w-10'/>
+        </div>      
       </div>
-      <div className='absolute right-0 h-auto w-auto'>
-        <img src={thumbnail} alt='bad-img' className='h-14 w-10'/>
-      </div>      
-    </div>
+      <Modal />
+    </>
   )
 }
 

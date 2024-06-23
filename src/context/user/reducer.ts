@@ -6,13 +6,6 @@ export interface UserState {
     isError: boolean,
     errorMessage: string
 }
-
-const p: Preferences = {
-    sports: [],
-    teams: [],
-    articles:[],
-    matches:[]
-}
  
 const u: User = {
     user: {

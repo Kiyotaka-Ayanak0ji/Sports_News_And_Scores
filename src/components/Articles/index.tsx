@@ -5,8 +5,9 @@ import ErrorBoundary from '../ErrorBoundary.tsx'
 import { Suspense } from 'react'
 import ArticleList from "./ArticleList.tsx";
 import Favourites from "./Favourites.tsx";
+import React from "react";
 
-export default function Articles() {
+const Articles:React.FC = () => {
   const dispatch = useNewsDispatch();
 
   useEffect(() => {
@@ -40,3 +41,4 @@ export default function Articles() {
   );
 }
 
+export default Articles;

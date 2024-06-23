@@ -1,6 +1,6 @@
 import { API_KEY } from "../../config/constants"
+import { Match } from "../../types/matches";
 import { customFetch } from "../../utils/middleware";
-import { Match } from "./reducer";
 
 export const fetchMatches = async(dispatch : any) => {
     try{
@@ -8,11 +8,17 @@ export const fetchMatches = async(dispatch : any) => {
 
         const url = `${API_KEY}/matches`;
     
-        const data:Match[] = await customFetch(url,"GET",true);
+        const data = await customFetch(url,"GET",false);
+
+        if(!data?.ok){
+            throw new Error("Failed to fetch matches");
+        }
 
         dispatch({type: "FETCH_MATCH_SUCCESS",payload: data});
 
-        return data;
+        const response:Match[] = await data.json();
+
+        return response;
     }
     catch(error){
         dispatch({type: "FETCH_MATCH_FAILURE",payload: "Failed to fetch Matches !"})
@@ -26,11 +32,15 @@ export const fetchMatch = async(dispatch : any,id: number) => {
 
         const url = `${API_KEY}/matches/${id}`;
     
-        const data:Match = await customFetch(url,"GET",true);
+        const data = await customFetch(url,"GET",false);
 
-        console.log("Success",data);
+        // dispatch({type: "FETCH_Match_SUCCESS",payload: data});
+        
+        const response:Match = await data?.json();
 
-        return data;
+        console.log("Success",response);
+
+        return response;
     }
     catch(error){
         dispatch({type: "FETCH_MATCHES_FAILURE",payload: "Failed to fetch Match !"})

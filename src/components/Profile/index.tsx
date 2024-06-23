@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { API_KEY } from "../../config/constants";
 import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import {  Fragment } from "react";
@@ -37,7 +36,7 @@ const ChangePassword: React.FC = () => {
         current_password: currentPassword,
         new_password: newPassword
       })
-      
+
       if (response.ok) {
         setError(null);
         setMessage("Password changed successfully");

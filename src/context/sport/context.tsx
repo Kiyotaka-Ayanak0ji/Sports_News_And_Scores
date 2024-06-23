@@ -1,10 +1,10 @@
-import React, { useReducer, useState } from "react";
+import React, { useContext, useReducer } from "react";
 import { createContext } from "react";
 
-import { SportActions, SportState, initialSportState ,reducer } from "./reducer";
+import { SportActions, SportState, initialSportState,reducer } from "./reducer";
 
 
-const SportStateContext = createContext<SportState | undefined>(undefined);
+const SportStateContext = createContext<SportState>(initialSportState);
 
 export type SportsDispatch = React.Dispatch<SportActions>
 
@@ -24,6 +24,6 @@ export const SportProvider:React.FC<React.PropsWithChildren> = ({ children }) =>
     )
 }
 
-export const useSportsState = () => useState(SportStateContext);
+export const useSportsState = () => useContext(SportStateContext);
 
-export const useSportsDispatch = () => useState(SportsDispatchContext);
+export const useSportsDispatch = () => useContext(SportsDispatchContext);

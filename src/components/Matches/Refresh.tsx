@@ -1,13 +1,19 @@
-const RefreshButton = (props) => {
-    const {onClick,isLoading} = props;
+import React from "react";
+
+interface Props{
+    onClick: () => void;
+    isLoading: boolean;
+}
+
+const RefreshButton:React.FC<Props> = ({onClick,isLoading}) => {
     return (
         <button
         onClick={onClick}
         disabled={isLoading}
-        className={`flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`flex p-2 items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold rounded transition duration-300 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
         {isLoading ? (
-            <svg className="animate-spin h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin h-8 w-8 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path
                 className="opacity-75"

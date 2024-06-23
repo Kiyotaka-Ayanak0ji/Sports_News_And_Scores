@@ -6,13 +6,9 @@ export const fetchTeams = async (dispatch: any) => {
         dispatch({type:"FETCH_TEAM_REQUEST"});
 
         const url = `${API_KEY}/teams`;
-        const data = await customFetch(url,'GET',true);
+        const data = await customFetch(url,'GET',false);
 
         dispatch({type:"FETCH_TEAM_SUCCESS",payload: data});
-
-        const res = await data?.json();
-        
-        return res; 
     }
     catch(error){
         console.log(error);
@@ -25,7 +21,7 @@ export const fetchTeam = async (dispatch: any,id: number) => {
         dispatch({type:"FETCH_TEAM_REQUEST"});
 
         const url = `${API_KEY}/teams/${id}`;
-        const data = await customFetch(url,'GET',true);
+        const data = await customFetch(url,'GET',false);
 
         // dispatch({type:"FETCH_TEAM_SUCCESS",payload: data});
 

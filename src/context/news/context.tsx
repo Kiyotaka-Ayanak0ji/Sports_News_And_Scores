@@ -4,8 +4,7 @@ import { reducer } from "./reducer";
 import { NewsActions } from "./reducer";
 import { initialState } from "../../types/articles";
 
-
-const NewsStateContext = createContext<NewsState | undefined> (undefined);
+const NewsStateContext = createContext<NewsState> (initialState);
 
 export type NewsDispatch = React.Dispatch<NewsActions>;
 

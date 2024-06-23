@@ -7,11 +7,11 @@ export const fetchNews = async(dispatch : any) => {
 
         const url = `${API_KEY}/articles`;
     
-        const data = await customFetch(url,"GET",true);
+        const data = await customFetch(url,"GET",false);
 
         dispatch({type: "FETCH_NEWS_SUCCESS",payload: data});
 
-        return await data?.json();
+        return data;
     }
     catch(error){
         dispatch({type: "FETCH_NEWS_FAILURE",payload: "Failed to fetch news articles !"})
@@ -25,7 +25,7 @@ export const fetchNewsArticle = async(dispatch : any,id: number) => {
 
         const url = `${API_KEY}/articles/${id}`;
     
-        const data = await customFetch(url,"GET",true);
+        const data = await customFetch(url,"GET",false);
 
         // dispatch({type: "FETCH_NEWS_SUCCESS",payload: data});
 

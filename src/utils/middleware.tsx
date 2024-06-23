@@ -1,8 +1,9 @@
 import { Bounce, toast } from "react-toastify";
+import { isAuth } from "../layout/account/Appbar";
 
 export type request_type = "GET" | "PATCH" | "POST";
 
-const token = localStorage.getItem("authToken")??"";
+const token = isAuth;
 
 export const customFetch = async(url:string ,option: request_type, authRequired?: boolean , body?: any) => {
     let response;
@@ -47,13 +48,11 @@ export const customFetch = async(url:string ,option: request_type, authRequired?
         }
     }
 
-    const data = await response.json();
-
     //validation logic...
     if(response.ok){
         try{       
             //200: success
-            console.log(data);
+            console.log(await response.json());
             
             return response;
             
@@ -72,10 +71,18 @@ export const customFetch = async(url:string ,option: request_type, authRequired?
                 closeOnClick: true
             })
         }
-        //Store the auth token
-        localStorage.setItem("authToken",token);
     }
     else{
-        throw new Error(data.errors);
+        toast.error("Internal Server Error",{
+            pauseOnHover: false,
+            theme: "colored",
+            delay: 5000,
+            progress:undefined,
+            hideProgressBar: false,
+            pauseOnFocusLoss: true,
+            position: "top-right",
+            autoClose: 3000,
+            closeOnClick: true
+        });
     }
 } 

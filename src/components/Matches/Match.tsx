@@ -4,14 +4,22 @@ import LikeButton from './LikeButton';
 import { toast } from 'react-toastify';
 import { Dialog , DialogPanel ,DialogTitle , Button } from '@headlessui/react';
 import { Match } from '../../types/matches';
+import React from 'react';
+import { useMatchDispatch, useMatchState } from '../../context/matches/context';
+import { fetchMatch } from '../../context/matches/actions';
 
-const MatchCard:React.FC = (props) => {
+interface Props{
+	id: number
+}
+
+const MatchCard:React.FC<Props> = async({id}) => {
 
 	let liked = localStorage.getItem("likedMatches")??"[]";
 	
 	const res = Array(JSON.parse(liked));
 
-	const { id , title , location , score ,teams } = props;
+	const dispatch = useMatchDispatch();
+	const curr = await fetchMatch(dispatch,id);
 	
 	const [isloading,setIsLoading] = useState(false);
 	
@@ -35,7 +43,7 @@ const MatchCard:React.FC = (props) => {
 										{match.teams[0].name}
 									</p>
 									<p className='absolute right-0 font-light text-sm'>
-										{match.score[teams[0].name]}
+										{match.score[match.teams[0].name]}
 									</p>
 								</span>
 								<span className='flex p-2'>
@@ -43,7 +51,7 @@ const MatchCard:React.FC = (props) => {
 										{match.teams[1].name}
 									</p>
 									<p className='absolute right-0 font-light text-sm'>
-										{match.score[teams[1].name]}
+										{match.score[match.teams[1].name]}
 									</p>
 								</span>
 							</div>
@@ -89,11 +97,11 @@ const MatchCard:React.FC = (props) => {
 		//Set loading true and then false after 2s delay..
 		setIsLoading(true);
 
+		//Simulate a 2s delay...
 		setTimeout(() => {
 			setIsLoading(false);
 		},2000);
 
-		//Stimulate a 2s delay...
 	}
 
 	return (
@@ -101,39 +109,39 @@ const MatchCard:React.FC = (props) => {
 		<div className='flex-col font-mono w-2/12 h-full dark:text-neutral-500 text-black bg-gray-500 dark:bg-zinc-600 items-center justify-between rounded-none border-2 border-stone-700'>
 			<span className='flex-row justify-stretch'>
 				<h3 
-					onClick={handleMatch(id)}
+					onClick={() => handleMatch(curr?)}
 					className='absolute left-0 text-black mt-2 mb-1'>
-					{title}
+					{curr?.name}
 				</h3>
 				
 				<div className='flex-auto absolute right-0'>
-					<LikeButton onClick={() => handleLikes(id)} />
+					<LikeButton onClick={() => handleLikes(curr?.id)} />
 				</div>
 
-				<div className='flex-auto absolute right-0'>
+				<div className='w-10 h-10 flex-auto absolute right-0'>
 					<RefreshButton onClick={() => handleRefresh} isLoading={isloading} />
 				</div>
 
 			</span>
 
-			<p className='text-sm font-light text-neutral-400'>
-				{location}
+			<p className='p-1 text-sm font-light text-neutral-400'>
+				{curr?.location}
 			</p>
 
 			<span className='inline-flex'>
 				<p className='items-start text-base font-bold text-black'>
-					{teams[0].name}
+					{curr?.teams[0].name}
 				</p>
 				<p className='items-end text-base text-neutral-500'>
-					{score[teams[0].name]}
+					{curr?.score[curr?.teams[0].name]}
 				</p>
 			</span>
 			<span className='inline-flex'>
 				<p className='items-start text-base font-bold text-black'>
-					{teams[1].name}
+					{curr?.teams[1].name}
 				</p>
 				<p className='items-end text-base text-neutral-500'>
-					{score[teams[1].name]}
+					{curr?.score[curr?.teams[1].name]}
 				</p>
 			</span>
 		</div>

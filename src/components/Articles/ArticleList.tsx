@@ -1,18 +1,19 @@
 import { Menu, MenuButton, MenuItem, MenuItems, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { useNewsDispatch } from '../../context/news/context';
+import { useNewsDispatch, useNewsState } from '../../context/news/context';
 import { fetchNews } from '../../context/news/actions';
 import { News } from '../../types/articles';
 import { CiFilter } from 'react-icons/ci'
 import Article from './Article';
 import { useEffect, useState } from 'react';
+import React from 'react';
+import { toast } from 'react-toastify';
 
-async function ArticleList(){
+const ArticleList:React.FC = () => {
   
-  const dispatch = useNewsDispatch();
-  const nws:News[] = await fetchNews(dispatch);
-
-  let filtered:News[] = nws;
+  const {news , isLoading , isError , errorMessage} = useNewsState();
+  
+  let filtered:News[] = news;
 
   const filterSports = [
     'Basketball',
@@ -27,15 +28,47 @@ async function ArticleList(){
   const [filterInput,setFilterInput] = useState<string>("");
 
   const filter = (filterInput:string) => {
-    filtered = nws.filter((item) => item.sport.name === filterInput)
+    filtered = filtered.filter((item) => item.sport.name === filterInput)
   }
 
   useEffect(()=>{
+    const dispatch = useNewsDispatch();
+    fetchNews(dispatch);
+
+    const { news } = useNewsState();
+    filtered = news;
+  },[]);
+
+  useEffect(() => {
     if(filterInput !== ""){
       filter(filterInput);
     }
-  },[filterInput]);
+  },[filterInput])
 
+  if(isLoading){
+    return(
+      <div className='flex items-center justify-center w-1/2 h-1/2'>
+        <p className='flex text-base'>
+          Loading...
+        </p>
+        <progress className='flex-1 aboulute top-1/3 left-1/3' value={10} />
+      </div>
+    )
+  }
+
+  if(isError){
+    toast.error(errorMessage,{
+      pauseOnHover: false,
+      theme: "colored",
+      delay: 5000,
+      progress: undefined,
+      hideProgressBar: false,
+      pauseOnFocusLoss: true,
+      position: "top-right",
+      autoClose: 3000,
+      closeOnClick: true
+    })
+  }
 
   return (
     <>
@@ -61,11 +94,15 @@ async function ArticleList(){
                 className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white [--anchor-gap:var(--spacing-1)] focus:outline-none"
               >
                 {filterSports.map((sport_name) => (
-                  <MenuItem 
-                    className="transition ease-linear group flex w-full items-center 
-                    gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10">
-                    <span onClick={() => setFilterInput(sport_name)}>{sport_name}</span>
-                  </MenuItem>
+                  <div 
+                    onClick={() => setFilterInput(sport_name)}
+                    className="p-1 transition ease-linear group flex w-full items-center gap-2 rounded-lg py-1.5 px-3 data-[focus]:bg-white/10">
+                    <MenuItem >
+                      <span className='text-base font-semibold text-stone-900 p-2'>
+                        {sport_name}
+                      </span>
+                    </MenuItem>
+                  </div>
                 ))};
               </MenuItems>
             </Transition>
@@ -89,12 +126,4 @@ async function ArticleList(){
   )
 }
 
-const render = () => {
-  return (
-    <>
-      <ArticleList/>
-    </>
-  );
-}
-
-export default render;
+export default ArticleList;

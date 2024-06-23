@@ -1,47 +1,63 @@
 import React, { useEffect, useState } from 'react';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react'
 import { ChevronDownIcon, CheckIcon } from '@heroicons/react/24/outline';
-import { fetchSports } from '../../context/sport/actions'
-import { fetchTeams } from '../../context/teams/actions'
-import { useTeamDispatch } from '../../context/teams/context'
-import { useSportsDispatch } from '../../context/sport/context'
-import { News } from '../../types/articles';
-import { fetchNews } from '../../context/news/actions';
-import { useNewsDispatch } from '../../context/news/context';
+import { useTeamDispatch, useTeamState } from '../../context/teams/context'
+import { useNewsDispatch, useNewsState } from '../../context/news/context';
 import clsx from 'clsx';
 import { Sport } from '../../types/sports';
 import { Team } from '../../types/matches';
-import { Data, fetchPreferences } from '../../context/user/actions';
+import { fetchPreferences } from '../../context/user/actions';
+import { useUserState } from '../../context/user/context';
+import { useSportsDispatch, useSportsState } from '../../context/sport/context'
+import { fetchNews } from '../../context/news/actions';
+import { fetchSports } from '../../context/sport/actions';
+import { fetchTeams } from '../../context/teams/actions';
+import { News } from '../../types/articles';
 
-async function Favourites(){
-
-    const dispatch = useSportsDispatch();
-    const dispatch_news = useNewsDispatch();
-    const dispatch_team = useTeamDispatch();
-
-    const sports:Sport[] = await fetchSports(dispatch);
-    const teams:Team[] = await fetchTeams(dispatch_team);
-
-    const news:News[] =  await fetchNews(dispatch_news);
-
-    const [render,setRender] = useState<News[]>(news||[]);
+const Favourites:React.FC = () => {
     
+    const { user } = useUserState();
+    
+    let filtered:News[];
+    let sports_list:Sport[];
+    let teams_list:Team[];
+    let render:News[];
+
+    const dispatch_t = useTeamDispatch();
+    const dispatch_s = useSportsDispatch();
+    const dispatch_n = useNewsDispatch();
+ 
     const [selectedSport,setSelectedSport] = useState("");
     const [selectedTeam,setSelectedTeam] = useState("");
+    
+    useEffect(() => {
+        
+        fetchNews(dispatch_n);
+        fetchSports(dispatch_s);
+        fetchTeams(dispatch_t);
+
+        const {news} = useNewsState();
+        const {teams} = useTeamState();
+        const {sports} = useSportsState();
+
+        render = news;
+        teams_list = teams;
+        sports_list = sports;
+    },[])
 
     useEffect(() => {
-        let filtered = render;
-
-        const pref:Data = fetchPreferences();
+        fetchPreferences();
         
         //Filter by preferences...
-        filtered = render.filter((item) => {
+        render = render.filter((item) => {
             return(
-                item.teams.some((team) => pref.preferences.SelectedTeams.includes(team.name))
+                item.teams.some((team) => user.user.preferences.SelectedTeams.includes(team.name))
                 ||
-                pref.preferences.SelectedSports.includes(item.sport.name)
+                user.user.preferences.SelectedSports.includes(item.sport.name)
             );
         });
+
+        filtered = render;
 
         if(selectedSport !== ""){
 
@@ -57,10 +73,6 @@ async function Favourites(){
                 });
             });
         }
-
-        //Update render...
-        setRender(filtered);
-
     },[selectedSport,selectedTeam]);
 
     return (
@@ -91,7 +103,7 @@ async function Favourites(){
                             'transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0'
                         )}
                         >
-                        {sports.map((sport:Sport) => (
+                        {sports_list.map((sport:Sport) => (
                             <ListboxOption
                             key={sport.id}
                             value={sport.name}
@@ -129,7 +141,7 @@ async function Favourites(){
                         'transition duration-100 ease-in data-[leave]:data-[closed]:opacity-0'
                     )}
                     >
-                    {teams.map((team:Team) => (
+                    {teams_list.map((team:Team) => (
                         <ListboxOption
                         key={team.id}
                         value={team.name}
@@ -146,7 +158,7 @@ async function Favourites(){
                 </div>
 
                 <div className='mt-2 container flex-col w-full h-full items-center justify-center gap-2'>
-                    {render.map((item) => {
+                    {filtered.map((item) => {
                         return (
                             <div className='flex-wrap w-full h-1/3 items-center justify-center bg-white dark:bg-stone-500 text-black dark:text-cyan-400'>
                                 <h4 className='absolute left-0 text-xl font-bold text-black'>
@@ -155,7 +167,7 @@ async function Favourites(){
                                 <p className='absolute left-0 inline-flex'>
                                     {item.summary.substring(0,100)}
                                 </p>
-                                <button className='rounded-none absolute left-0 text-white shadow-inner dark:bg-blue-400 dark:shadow-cyan-300 bg-neutral-500 shadow-slate-600 text-base items-center justify-center flex-end'>
+                                <button className='rounded-none absolute left-0 text-white shadow-inner dark:bg-blue-600 dark:shadow-cyan-300 bg-neutral-500 shadow-slate-600 text-base items-center justify-center flex-end'>
                                     Read More
                                 </button>
                             </div>

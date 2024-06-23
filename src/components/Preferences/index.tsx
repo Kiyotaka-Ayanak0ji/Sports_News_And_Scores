@@ -1,7 +1,8 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import { useEffect, useState } from 'react'
-import { UserPreferences, updateUserPreferences } from '../../context/user/actions';
+import { UserPreferences, fetchPreferences, updateUserPreferences } from '../../context/user/actions';
 import { Sport } from '../../types/sports';
+import { useUserState } from '../../context/user/context';
 
 const Settings = () => {
   const sports_sel:string[] = [];
@@ -142,9 +143,10 @@ const Settings = () => {
   const [isLoading,setIsLoading] = useState(false);
 
   useEffect(() => {
+    fetchPreferences();
     updateUserPreferences(set_pref);
     setIsLoading(false);
-  },[isLoading]);
+  },[isLoading,isOpen]);
 
   const handleChange = (sport_item:Sport) => {
     if(sports_sel.includes(sport_item.name)){
@@ -168,11 +170,24 @@ const Settings = () => {
 
   if(isLoading){
     return(
-      <span className='absolute top-1/3 left-1/3 text-xl font-semibold'>
-        <p>Loading...</p>
-        <progress value={10} className='transition ease-linear' />
-      </span>
+      <div className='flex items-center justify-center w-1/2 h-1/2'>
+        <p className='flex font-semibold text-neutral-500 text-base'>
+          Loading...
+        </p>
+        <progress className='flex-1 aboulute top-1/3 left-1/3' value={10} />
+      </div>
     )
+  }
+
+  const handleCheck =(name:string) => {
+    
+    const {user} = useUserState();
+
+    if(user.user.preferences.SelectedSports.includes(name) || 
+    user.user.preferences.SelectedTeams.includes(name)){
+      return true;
+    }
+    return false;
   }
 
   return (
@@ -188,10 +203,10 @@ const Settings = () => {
               </DialogTitle>
               <hr className='text-stone-900 mr-2 ml-2 p-1 h-2'/>
               
+              <h2 className='mx-auto p-2 text-xl text-black'>
+                Favourite Sports
+              </h2>
               <div className='flex-wrap w-full h-1/3 items-center justify-between'>
-                <h2 className='text-xl text-black'>
-                  Favourite Sports
-                </h2>
                   {sports.map((sport) => (
                     <span className='w-8'>
                       <label htmlFor='team' className='text-base text-black'>
@@ -200,7 +215,7 @@ const Settings = () => {
                       <input 
                         id='sport'
                         type='checkbox' 
-                        checked={false}
+                        checked={handleCheck(sport.name)}
                         onClick={() => handleChange(sport)} 
                         className='transition ease-in w-4 h-4 
                         outline-none focus:outline-blue'
@@ -208,11 +223,12 @@ const Settings = () => {
                     </span>
                   ))}
               </div>
-
+              
+              <hr className='text-stone-900 mr-2 ml-2 p-1 h-2'/>
+              <h2 className='p-2 mx-auto text-xl text-black'>
+                Favourite Teams
+              </h2>
               <div className='flex-wrap w-full h-1/3 items-center justify-between'>
-                <h2 className='text-xl text-black'>
-                  Favourite Teams
-                </h2>
                   {teams.map((team) => (
                     <span className='w-8'>
                       <label htmlFor='team' className='text-base text-black'>
@@ -221,7 +237,7 @@ const Settings = () => {
                       <input 
                         id='sport'
                         type='checkbox' 
-                        checked={false}
+                        checked={handleCheck(team.name)}
                         onClick={() => handleTeamChange(team)} 
                         className='transition ease-in w-4 h-4 
                         outline-none focus:outline-blue'
@@ -230,10 +246,13 @@ const Settings = () => {
                   ))}
               </div>
               
-              <div className="mt-4">
+              <div className="mt-4 items-center justify-center">
                 <Button
-                  className="inline-flex items-center gap-2 rounded-md bg-blue-500 hover:bg-blue-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-stone-400/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
-                  onClick={setIsLoading(true)}
+                  className="inline-flex items-center gap-2 rounded-md bg-blue-500 hover:bg-blue-700 py-1.5 px-3 text-sm/6 font-semibold text-white/75 shadow-inner shadow-stone-400/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
+                  onClick={() => {
+                    setIsLoading(true);
+                    setIsOpen(false)
+                  }}
                 >
                   Save
                 </Button>

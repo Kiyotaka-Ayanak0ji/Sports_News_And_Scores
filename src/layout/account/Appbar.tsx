@@ -8,12 +8,13 @@ import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import Articles from "../../components/Articles";
 import LiveMatch from "../../components/Matches";
 import Favourites from "../../components/Articles/Favourites";
+import React from "react";
 
 const intial = [{ name: "Sign out", href: "/logout" }];
 
-const Navbar = () => {
-  
-  const isAuth = !!localStorage.getItem("authToken");
+export const isAuth = localStorage.getItem("authToken")??"";
+
+const Navbar:React.FC = () => {
 
   const [userNavigation, setUserNavigation] = useState(intial);
 
@@ -38,7 +39,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    if (!isAuth) {
+    if (isAuth !== "") {
       setUserNavigation([
         { name: "Sign in", href: "/signin" },
         { name: "Sign up", href: "/signup" },

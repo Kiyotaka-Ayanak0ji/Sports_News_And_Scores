@@ -6,14 +6,9 @@ export const fetchSports = async(dispatch: any) => {
         dispatch({type:"FETCH_SPORTS_REQUEST"});
     
         const url = `${API_KEY}/sports`;
-        const data = await customFetch(url,'GET',true);
+        const data = await customFetch(url,'GET',false);
     
         dispatch({type:"FETCH_SPORTS_SUCCESS",payload:data});
-
-        const res = await data.json();
-
-        return res;
-        
     }catch(error){
         console.log(error);
         dispatch({type:"FETCH_SPORTS_FAILURE",payload:'Unable to fetch sports'});
@@ -25,7 +20,7 @@ export const fetchSport = async(dispatch: any,id: number) => {
         dispatch({type:"FETCH_SPORTS_REQUEST"});
     
         const url = `${API_KEY}/sports/${id}`;
-        const data = await customFetch(url,'GET',true);
+        const data = await customFetch(url,'GET',false);
     
         // dispatch({type:"FETCH_SPORTS_SUCCESS",payload:data});
 
