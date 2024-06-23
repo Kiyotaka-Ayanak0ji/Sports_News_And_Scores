@@ -109,7 +109,7 @@ const MatchCard:React.FC<Props> = async({id}) => {
 		<div className='flex-col font-mono w-2/12 h-full dark:text-neutral-500 text-black bg-gray-500 dark:bg-zinc-600 items-center justify-between rounded-none border-2 border-stone-700'>
 			<span className='flex-row justify-stretch'>
 				<h3 
-					onClick={() => handleMatch(curr?)}
+					onClick={() => handleMatch(curr)}
 					className='absolute left-0 text-black mt-2 mb-1'>
 					{curr?.name}
 				</h3>

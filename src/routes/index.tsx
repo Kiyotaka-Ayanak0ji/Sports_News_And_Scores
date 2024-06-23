@@ -15,10 +15,10 @@ const Logout = React.lazy(() => import("../pages/logout"));
 
 
 const router = createBrowserRouter([
-  // { 
-  //   path: "/", 
-  //   element: <Navigate to='/account' replace/>,
-  // },
+  { 
+    path: "/", 
+    element: <Navigate to='/account' replace/>,
+  },
   {
     path: "/signin",
     element: <Signin />

@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom"
 import Navbar from "./Appbar"
 import React from "react"
 
-const AccountLayout = () => {
+const AccountLayout:React.FC = () => {
 
   return (
     <>

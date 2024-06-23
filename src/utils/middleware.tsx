@@ -1,9 +1,8 @@
 import { Bounce, toast } from "react-toastify";
-import { isAuth } from "../layout/account/Appbar";
 
 export type request_type = "GET" | "PATCH" | "POST";
 
-const token = isAuth;
+const token = localStorage.getItem("authToken")??"";
 
 export const customFetch = async(url:string ,option: request_type, authRequired?: boolean , body?: any) => {
     let response;
