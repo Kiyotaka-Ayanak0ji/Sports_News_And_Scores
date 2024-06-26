@@ -20,7 +20,7 @@ export default function Articles() {
           Articles
         </h1>
       </div>
-      <div className="mt-2 justify-between flex items-center w-full">
+      <div className="mt-2 flex-row gap-2 w-full">
         <ErrorBoundary>
             <Suspense fallback={
                 <div className="flex items-center justify-center">

@@ -51,10 +51,10 @@ const Appbar = () => {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-16 items-center justify-between">
                 
-                <div className="flex-col items-center">
+                <div className="flex-col">
                   <div className="flex-shrink-0 absolute left-0">
                     <img
-                      className="h-14 w-14 sm:h-12 sm:w-12 mr-2"
+                      className="h-14 w-14 mb-20"
                       src="../src/assets/logo.png"
                       alt="Sport"
                     />
@@ -125,7 +125,7 @@ const Appbar = () => {
           <LiveMatch />
         </div>
         <hr className="mt-40 h-2 inline-flex w-full bg-stone-800" />
-        <div className="mt-1 p-2 flex-col w-full h-full">
+        <div className="">
           <Articles />
         </div>
       </div> 

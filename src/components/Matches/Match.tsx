@@ -11,10 +11,7 @@ import RefreshButton from './Refresh.tsx';
 
 export default function MatchId() {
 
-	let liked = localStorage.getItem("likedMatches") ?? "[]";
-
-	const res = Array(JSON.parse(liked));
-
+  
   const [match,setMatch] = useState<Match>({
     id: 0,
     sportName: '',
@@ -28,47 +25,54 @@ export default function MatchId() {
     endsAt: '',
     name: ''
   });
-
+  
   const {matchId} = useParams();
   useEffect(()=>{
     fetchMatch(matchId);
   }, [matchId]);
-
+  
   const fetchMatch = async (id : string | undefined) => {
     try {
       const response = await fetch(`${API_ENDPOINT}/matches/${id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
-
+      
       if (!response.ok) {
         throw new Error('Failed to fetch matche');
       }
-
+      
       const data = await response.json();
-
+      
       setMatch(data)
       console.log(match);
     } catch (error) {
       console.error('Sign-in failed:', error);
     }
   }
-
+  
   const navigate = useNavigate();
   const [, setOpenRead] = useState(false);
   function closeModal() {
     setOpenRead(false);
     navigate("../");
   }
+  
+  let liked = localStorage.getItem("likedMatches") ?? "[]";
 
+  let res = Array(JSON.parse(liked));
+  
   const handleLikes = (id: number) => {
-		//Set loading as true...
+    res = Array(JSON.parse(localStorage.getItem("likedMatches") ?? "[]"));
+
+    //Set loading as true...
 		if (res.includes(id)) {
 			res.splice(id, 1);
 		}
 		else {
 			res.push(id);
 		}
+
 		localStorage.setItem("likedMatches", JSON.stringify(res));
 		toast.info("Added liked match", {
 			position: "top-right",
@@ -132,10 +136,8 @@ export default function MatchId() {
                     <p className="flex-1 font-medium text-base">
                       {match.score[match.teams[0].name]}
                     </p>
-                    <div className='items-end p-2'>
+                    <div className='flex-col gap-1 items-end p-2'>
                       <RefreshButton onClick={() => handleRefresh} isLoading={isLoading}/>
-                    </div>
-                    <div className='items-end p-2'>
                       <LikeButton onClick={() => handleLikes(Number(matchId??'0'))} clicked={res.includes(matchId)}/>
                     </div>
                   </div>

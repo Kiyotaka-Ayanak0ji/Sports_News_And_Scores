@@ -156,7 +156,7 @@ export default function LiveMatchList() {
           {filteredMatches.map((match: any) => {
             return (
               <div className="flex flex-col" key={match.id}>
-                <div className="border-2 mx-2 mb-1 rounded border-amber-700 p-2 bg-zinc-200 flex-auto flex-col flex-wrap">
+                <div className="border-2 mx-2 mb-1 rounded-lg p-2 bg-zinc-200 flex-auto flex-col flex-wrap">
                   <div className=" flex justify-between w-48">
                     <h3 className="font-bold text-black-800">{match.name}</h3>
                     <RefreshButton onClick={() => handleRefresh()} isLoading={loading}/>

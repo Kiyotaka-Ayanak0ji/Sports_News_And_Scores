@@ -190,195 +190,200 @@ export default function ArticleList(){
   const [,setIsOpen] = useState(false);
 
   return (
-    <div className="container auto flex gap-12">
-      <div className="flex justify-end w-11/12 mx-auto my-2">
-        <select 
-        className={"container flex-col overflow-scroll"}>
-          <div className={'border-2 border-amber-400'}>
+    <div className="container w-full h-full flex-row gap-3">
+      <div className="relative left-0 container flex-row w-5/12 gap-12">
+        <div className="flex items-start justify-start w-full h-1/3 mx-auto my-2">
+          <select
+            value={selectedCategory}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            className="justify-between py-2 px-5 text-zinc-600 bg-slate-400 rounded-lg"
+          >
             {categories.map((category) => (
               <option
                 key={category}
                 onClick={() => handleCategoryChange(category)}
                 className={
                   category === selectedCategory
-                    ? "active bg-slate-400 hover:bg-slate-500 rounded-lg"
-                    : "p-2 rounded-md bg-blue-300 hover:bg-blue-500"
+                    ? "active bg-stone-400 hover:bg-stone-500 dark:bg-cyan-500 p-2 rounded-md dark:hover:bg-cyan-600"
+                    : "p-2 rounded-md bg-stone-400 hover:bg-stone-500 dark:bg-cyan-400 dark:hover:bg-cyan-600 "
                 }
               >
                 {category}
               </option>
             ))}
-          </div>
-        </select>
-        <select 
-        className="justify-between py-2 px-5 text-stone-600 bg-slate-400 rounded-lg">
-          <div className={'border-2 border-amber-400'}>
+          </select>
+          <select
+            value={selectedSort}
+            onChange={(e) => handleSortChange(e.target.value)}
+            className="justify-between py-2 px-5 text-zinc-600 bg-slate-400 rounded-lg"
+          >
             {sortCategories.map((sortCategory) => (
               <option
-              key={sortCategory}
-              onClick={() => handleSortChange(sortCategory)}
+                key={sortCategory}
+                onClick={() => handleSortChange(sortCategory)}
                 className={
                   sortCategory === selectedSort
-                    ? "active bg-slate-500 dark:bg-blue-500 p-2 rounded-md hover:bg-blue-400"
-                    : "p-2 rounded-md hover:bg-gray-400 dark:hover:bg-blue-400 bg-slate-800"
+                    ? "active bg-stone-400 hover:bg-stone-500 dark:bg-cyan-500 p-2 rounded-md dark:hover:bg-cyan-600"
+                    : "p-2 rounded-md bg-stone-400 hover:bg-stone-500 dark:bg-cyan-400 dark:hover:bg-cyan-600 "
                 }
               >
                 {sortCategory}
               </option>
             ))}
+          </select>
+          <div className="bg-gray-300 rounded-lg mx-2 p-3 text-black-600">
+            <FunnelIcon className="h-4 w-4" />
           </div>
-        </select>
-        <div className="bg-slate-300 rounded-lg mx-2 p-3 text-stone-900">
-          <FunnelIcon className="h-4 w-4" />
         </div>
-      </div>
 
-      <div className="flex flex-col overflow-y-scroll max-h-[525px] grid-cols-2 gap-2 p-2 lg:grid container mx-auto rounded-lg bg-orange-200">
-        {filtered.length === 0 && !isLoading && (
-          <div className="flex items-center justify-center">
-            <p className="text-center justify-center">
-              Loading...
-            </p>
-            <progress className="transition ease-linear" value={10} aria-busy={true} />
-          </div>
-        )}
-        {sortedArticles.map((article: Article) => {
-          return (
-            <div className="flex-auto flex justify-center">
-              <div className="max-w-sm rounded shadow-lg flex-auto">
-                <img
-                  className="flex items-center justify-center h-48 w-full object-cover"
-                  src={article.thumbnail}
-                  alt="Article thumbnail"
-                />
+        <div className="flex w-full flex-col overflow-y-scroll max-h-[525px] grid-cols-2 gap-2 p-2 lg:grid container mx-auto rounded-lg bg-neutral-400">
+          {filtered.length === 0 && !isLoading && (
+            <div className="flex items-center justify-center">
+              <p className="text-center justify-center">
+                Loading...
+              </p>
+              <progress className="transition ease-linear" value={10} aria-busy={true} />
+            </div>
+          )}
+          {sortedArticles.map((article: Article) => {
+            return (
+              <div className="flex-auto flex justify-center">
+                <div className="max-w-sm rounded shadow-lg flex-auto">
+                  <img
+                    className="flex items-center justify-center h-48 w-full object-cover"
+                    src={article.thumbnail}
+                    alt="Article thumbnail"
+                  />
 
-                <div className="px-6 py-4">
-                  <div className="font-bold text-xl mb-2">
-                    {article.title}
+                  <div className="px-6 py-4">
+                    <div className="font-bold text-xl mb-2">
+                      {article.title}
+                    </div>
+                    <div className="px-6 pt-4 pb-2">
+                      <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                        {getFormattedDate(article.date)}
+                      </span>
+                      <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                        {article.sport.name}
+                      </span>
+                    </div>
+                    
+                    <p className="p-2 text-gray-700 text-base">
+                      {article.summary}
+                    </p>
+
+                    <Link to={(authenticated) ? `/account/articles/${article.id}` : `/view/articles/${article.id}`}>
+                      <button
+                        id="readToggle"
+                        onClick={() => setIsOpen(true)}
+                        className="mt-2 flex text-center rounded-md border border-transparent bg-blue-600 px-2 py-1 mr-2 text-sm 
+                        font-medium text-cyan-400 hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      >
+                        Read More...
+                      </button>
+                    </Link>
                   </div>
-                  <div className="px-6 pt-4 pb-2">
-                    <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                      {getFormattedDate(article.date)}
-                    </span>
-                    <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                      {article.sport.name}
-                    </span>
-                  </div>
-                  
-                  <p className="p-2 text-gray-700 text-base">
-                    {article.summary}
-                  </p>
-
-                  <Link to={(authenticated) ? `/account/articles/${article.id}` : `/view/articles/${article.id}`}>
-                    <button
-                      id="readToggle"
-                      onClick={() => setIsOpen(true)}
-                      className="mt-2 flex text-center rounded-md border border-transparent bg-blue-600 px-2 py-1 mr-2 text-sm 
-                      font-medium text-cyan-400 hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                    >
-                      Read More...
-                    </button>
-                  </Link>
                 </div>
               </div>
+            );
+          })}
+        </div>
+      {/* FAVOURITES */}
+      <div className="absolute top-0 ml-20 left-full w-full flex-col gap-5 justify-between">
+        <div className="flex-row relative left-0 items-start w-auto mx-auto my-0">
+          <h1 className="text-gray-900 pb-2 text-center font-bold text-3xl">
+            Favourites
+          </h1>
+
+          <label className="text-neutral-700 font-medium text-base">
+            Sport: 
+          </label>
+          
+          <select
+            value={selectedFavSportCategory}
+            onChange={(e) => handleFavSportCategoryChange(e.target.value)}
+            className="justify-between py-2 px-5 text-stone-600 bg-slate-400 rounded-lg"
+          >
+            {favSportCategories.map((category1) => (
+              <option
+                key={category1}
+                onClick={() => handleFavSportCategoryChange(category1)}
+                className={
+                  category1 === selectedFavSportCategory
+                    ? "active bg-stone-400 hover:bg-stone-500 dark:bg-cyan-500 p-2 rounded-md dark:hover:bg-cyan-600"
+                  : "p-2 rounded-md bg-stone-400 hover:bg-stone-500 dark:bg-cyan-400 dark:hover:bg-cyan-600 "
+                }
+              >
+                {category1}
+              </option>
+            ))}
+          </select>
+          <label className="text-neutral-700 text-base">
+            Team: 
+          </label>
+
+          <select
+            value={selectedFavTeamCategory}
+            onChange={(e) => handleFavTeamCategoryChange(e.target.value)}
+            className="justify-between py-2 px-5 text-stone-600 bg-slate-400 rounded-lg"
+          >
+            {favTeamCategories.map((category2) => (
+              <option
+                key={category2}
+                onClick={() => handleFavTeamCategoryChange(category2)}
+                className={
+                  category2 === selectedFavTeamCategory
+                    ? "active bg-stone-400 hover:bg-stone-500 dark:bg-cyan-500 p-2 rounded-md dark:hover:bg-cyan-600"
+                  : "p-2 rounded-md bg-stone-400 hover:bg-stone-500 dark:bg-cyan-400 dark:hover:bg-cyan-600 "
+                }
+              >
+                {category2}
+              </option>
+            ))}
+          </select>
+        </div>
+          <div className="flex-col w-full overflow-y-scroll max-h-[510px] gap-2 p-2 lg:grid container mx-auto rounded-lg bg-zinc-500">
+            {filteredfav.length === 0 && !isLoading && (
+                <span>No articles available</span>
+              )}
+              {filteredfav.map((article: any) => {
+                return (
+                  <div className='flex-row dark:bg-zinc-600 dark:text-cyan-400 text-neutral-700 bg-white shadow-lg shadow-slate-400'>
+                    <div className='mt-2 mb-2 w-11/12 h-40'>
+                      <h2 className='absolute left-0 flex text-lg font-bold text-black'>
+                        {article.title}
+                      </h2>
+                      <p className='flex absolute left-0 text-base text-slate-500'>
+                        {article.summary.substring(0,200)}
+                      </p>
+                      <p className='absolute left-0 flex font-light text-sm'>
+                        {article.sport.name}
+                        {getFormattedDate(article.date)}
+                      </p>
+                      <a
+                        onClick={() => setIsOpen(false)} 
+                        className="inline-flex rounded-md border border-transparent bg-blue-600 px-2 py-1 mr-2 text-sm 
+                        font-medium text-cyan-400 hover:bg-blue-500 
+                        focus:outline-none focus-visible:ring-2 
+                        focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      >
+                        Read More...
+                      </a>
+                    </div>
+                    
+                    <div className='absolute right-0 h-auto w-auto'>
+                      <img 
+                        src={article.thumbnail} 
+                        alt='bad-img' 
+                        className='h-14 w-10'/>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
-    <div className="w-2/12 mx-auto my-0">
-        {/* Favourites */}
-        
-        <h1 className="text-gray-900 text-center font-bold text-3xl">
-          Favourites
-        </h1>
-
-        <label className="text-gray-700 text-base">
-          Sport: 
-        </label>
-        
-        <select
-          value={selectedFavSportCategory}
-          onChange={(e) => handleFavSportCategoryChange(e.target.value)}
-          className="justify-between py-2 px-5 text-stone-600 bg-slate-400 rounded-lg"
-        >
-          {favSportCategories.map((category1) => (
-            <option
-              key={category1}
-              onClick={() => handleFavSportCategoryChange(category1)}
-              className={
-                category1 === selectedFavSportCategory
-                  ? "active bg-slate-500 dark:bg-blue-500 p-2 rounded-md hover:bg-blue-400"
-                  : "p-2 rounded-md hover:bg-gray-400 dark:hover:bg-blue-400"
-              }
-            >
-              {category1}
-            </option>
-          ))}
-        </select>
-        <label className="text-gray-700 text-base">
-          Team: 
-        </label>
-
-        <select
-          value={selectedFavTeamCategory}
-          onChange={(e) => handleFavTeamCategoryChange(e.target.value)}
-          className="justify-between py-2 px-5 text-amber-400/90 bg-grey-400 rounded-lg"
-        >
-          {favTeamCategories.map((category2) => (
-            <option
-              key={category2}
-              onClick={() => handleFavTeamCategoryChange(category2)}
-              className={
-                category2 === selectedFavTeamCategory
-                  ? "active bg-slate-500 dark:bg-blue-500 p-2 rounded-md hover:bg-blue-400"
-                  : "p-2 rounded-md hover:bg-gray-400 dark:hover:bg-blue-400 bg-slate-800"
-              }
-            >
-              {category2}
-            </option>
-          ))}
-        </select>
-      </div>
-
-    <div className="flex-col overflow-y-scroll max-h-[510px] gap-2 p-2 lg:grid container mx-auto rounded-lg bg-zinc-500">
-      {filteredfav.length === 0 && !isLoading && (
-          <span>No articles available</span>
-        )}
-        {filteredfav.map((article: any) => {
-          return (
-            <div className='flex-row dark:bg-zinc-600 dark:text-cyan-400 text-neutral-700 bg-white shadow-lg shadow-slate-400'>
-              <div className='mt-2 mb-2 w-11/12 h-40'>
-                <h2 className='absolute left-0 flex text-lg font-bold text-black'>
-                  {article.title}
-                </h2>
-                <p className='flex absolute left-0 text-base text-slate-500'>
-                  {article.summary.substring(0,200)}
-                </p>
-                <p className='absolute left-0 flex font-light text-sm'>
-                  {article.sport.name}
-                  {getFormattedDate(article.date)}
-                </p>
-                <a
-                  onClick={() => setIsOpen(false)} 
-                  className="inline-flex rounded-md border border-transparent bg-blue-600 px-2 py-1 mr-2 text-sm 
-                  font-medium text-cyan-400 hover:bg-blue-500 
-                  focus:outline-none focus-visible:ring-2 
-                  focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                >
-                  Read More...
-                </a>
-              </div>
-              
-              <div className='absolute right-0 h-auto w-auto'>
-                <img 
-                  src={article.thumbnail} 
-                  alt='bad-img' 
-                  className='h-14 w-10'/>
-              </div>
-            </div>
-          );
-        })}
+        </div>
       </div>
     </div>
+
   );
 }

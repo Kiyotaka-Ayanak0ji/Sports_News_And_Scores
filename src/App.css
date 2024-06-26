@@ -6,13 +6,10 @@
   @apply h-full;
 }
 
-body {
-  @apply h-full;
-}
-:root{
+.dark {
   @apply bg-black text-white;
 }
 
-body{
-  @apply bg-black text-white;
+.light {
+  @apply bg-white text-black;
 }

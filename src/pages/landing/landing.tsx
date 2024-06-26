@@ -40,7 +40,7 @@ const Landing = () => {
               <div className="flex items-center">
                 <div className="absolute left-0 ">
                   <img
-                    className="items-start h-12 w-12 sm:h-14 sm:w-14 mr-2"
+                    className="items-start mb-2 h-12 w-12 sm:h-14 sm:w-14 mr-2"
                     src="../src/assets/logo.png"
                     alt="Sports App"
                   />
