@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom"
-import Appbar from "./Appbar"
+import Landing from "./landing"
 
-const AccountLayout = () => {
+const ViewLayout = () => {
 
   return (
     <>
-      <Appbar />
+      <Landing />
       <main>
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <Outlet />
@@ -15,4 +15,4 @@ const AccountLayout = () => {
   )
 }
 
-export default AccountLayout
+export default ViewLayout

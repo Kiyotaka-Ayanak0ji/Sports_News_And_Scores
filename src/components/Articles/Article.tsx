@@ -1,103 +1,123 @@
-import { useEffect, useState } from 'react';
-import { Button , Dialog,  DialogPanel, DialogTitle } from '@headlessui/react'
-import { News } from '../../types/articles';
-import React from 'react';
+import { useEffect, useState } from "react";
+import { API_ENDPOINT } from "../../config/constants";
+import { Article } from "../../context/articles/types";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment } from "react";
+import { useParams, useNavigate } from "react-router";
 
+export default function ArticleId() {
+  const [article, setArticle] = useState<Article>({
+    id: 0,
+    title: "",
+    summary: "",
+    content: "",
+    thumbnail: "",
+    date: new Date().toDateString(),
+    sport: {
+      id: 0,
+      name: "",
+    },
+    teams: [],
+  });
 
-const Article:React.FC<Omit<News,'id'|'teams'>> = (props) => {
+  let navigate = useNavigate();
+  let {articleId} = useParams();
+  console.log("articleId in Article.tsx: ", articleId);
   
-  const { title , thumbnail, content , date , summary , sport } = props; 
-  
-  const [isOpen,setIsOpen] = useState(false);
-  
-  const Modal:React.FC = () => {
-    return(
-      <Dialog onClose={() => setIsOpen(false)} open={isOpen} as="div" className="relative z-10 focus:outline-none">
-        <div className='fixed inset-0 z-10 w-screen overflow-y-auto'>
-          <div className="flex min-h-full items-center justify-center p-4">
-            <DialogPanel
-              transition
-              className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
-            >
-              <DialogTitle as="h3" className="text-base/7 font-xl text-black">
-                {title}
-              </DialogTitle>
-              <div className='flex w-full h-4/5'>
-                <img src={thumbnail} alt='bad-img' className='ml-3 mr-3 h-20 w-11/12 rounded-md lg:rounded-none'/>
-                <p className="flex mt-2 text-sm/6 text-white/50">
-                  {content}
-                </p>
-              </div>
-              <div className="mt-4 items-center justify-center">
-                <Button
-                  className="flex-end absolute right-0 items-center rounded-md bg-blue-500 hover:bg-blue-600 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Close
-                </Button>
-              </div>
-            </DialogPanel>
-          </div>
-        </div>
-      </Dialog>
-    )
-  }
-  
-  const getFormattedDate = (date:string) => {
-    let result = "";
+  useEffect(() => {
+    fetchArticle(articleId);
+  }, [articleId]);
 
-    //YYYY-MM-DD
-    const ref = date.slice(0,10);
-    
-    const mapping:Record<number,string> = {
-      1:"Jan",
-      2:"Feb",
-      3:"Mar",
-      4:"Apr",
-      5:"May",
-      6:"Jun",
-      7:"Jul",
-      8:"Aug",
-      9:"Sep",
-      10:"Oct",
-      11:"Nov",
-      12:"Dec"
+  const fetchArticle = async (id: string | undefined) => {
+    try {
+      const response = await fetch(`${API_ENDPOINT}/articles/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch article");
+      }
+
+      const data = await response.json();
+
+      setArticle(data);
+      console.log("article in fetch : ", article);
+    } catch (error) {
+      console.error("Sign-in failed:", error);
     }
-
-    const ind = Number(ref[5]+ref[6]);
-
-    result = mapping[ind] + " " + (ref[8]+ref[9]) + ", " + ref.slice(0,4); 
-
-    return result;
+  };
+  
+  const [,setIsOpen] = useState(false);
+  
+  function closeModal() {
+    setIsOpen(false);
+    navigate("../");
   }
 
   return (
-    <>
-      <div className='flex-row dark:bg-zinc-600 dark:text-cyan-300 text-neutral-500 bg-white shadow-lg shadow-slate-400'>
-        <div className='mt-2 mb-2 w-11/12 h-40'>
-          <h2 className='absolute left-0 flex text-lg font-bold text-black'>
-            {title}
-          </h2>
-          <p className='flex absolute left-0 text-base text-slate-500'>
-            {summary.substring(0,200)}
-          </p>
-          <p className='absolute left-0 flex font-light text-sm'>
-            {sport.name}
-            {getFormattedDate(date)}
-          </p>
-          <a
-            onClick={() => setIsOpen(true)} 
-            className='text-sm text-slate-400 hover:underline'>
-            Read More...
-          </a>
-        </div>
-        <div className='absolute right-0 h-auto w-auto'>
-          <img src={thumbnail} alt='bad-img' className='h-14 w-10'/>
-        </div>      
-      </div>
-      <Modal />
-    </>
-  )
-}
+    <Transition show={true} as={Fragment}>
+      <Dialog
+        as="div"
+        className="fixed inset-0 overflow-y-auto"
+        onClose={closeModal}
+      >
+        <div className="min-h-screen px-4 text-center">
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            {/* <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-40" /> */}
+          </Transition.Child>
 
-export default Article;
+          {/* This element is to trick the browser into centering the modal contents. */}
+          <span
+            className="inline-block h-screen align-middle"
+            aria-hidden="true"
+          >
+            &#8203;
+          </span>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <div className="inline-block items-center w-full max-w-lg p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              <Dialog.Title
+                as="h3"
+                className="font-xl text-stone-900 text-lg leading-6"
+              >
+                {article.title}
+              </Dialog.Title>
+              <div className='flex w-full h-4/5'>
+                <img src={article.thumbnail} alt='bad-img' className='ml-3 mr-3 h-20 w-11/12 rounded-md lg:rounded-none'/>
+                <p className="flex mt-2 text-sm/6 text-white/50">
+                  {article.content}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  closeModal();
+                }}
+                id="readToggle"
+                style={{ marginLeft: "300px" }}
+                className="inline-flex justify-center rounded-md border border-transparent hover:bg-blue-600/50 bg-blue-600 px-4 py-2 mr-2 text-sm font-medium text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              >
+                Close
+              </button>
+            </div>
+          </Transition.Child>
+        </div>
+      </Dialog>
+    </Transition>
+  );
+}

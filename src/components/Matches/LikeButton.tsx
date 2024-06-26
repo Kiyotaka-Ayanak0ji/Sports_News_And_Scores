@@ -1,10 +1,17 @@
-import { useState } from 'react'
+import React from "react";
 
-const LikeButton = ({onClick}) => {
-    const [clicked,setClicked] = useState(false);
+interface Props{
+    onClick: () => void;
+    clicked: boolean;
+}
+
+const LikeButton:React.FC<Props> = ({onClick,clicked}) => {
     return (
         <button
-            onClick={onClick && setClicked(true)}
+            onClick={() => {
+                onClick;
+                clicked = !clicked 
+            } }
         >
             {clicked ? (
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" className="size-6">

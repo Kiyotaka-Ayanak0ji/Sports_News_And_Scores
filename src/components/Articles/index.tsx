@@ -1,44 +1,41 @@
 import { useEffect } from "react";
-import { fetchNews } from "../../context/news/actions.ts";
-import { useNewsDispatch } from "../../context/news/context.tsx";
-import ErrorBoundary from '../ErrorBoundary.tsx'
+import { useArticlesDispatch } from "../../context/articles/context";
+import { fetchArticles } from "../../context/articles/action";
+import ErrorBoundary from '../ErrorBoundary'
 import { Suspense } from 'react'
 import ArticleList from "./ArticleList.tsx";
-import Favourites from "./Favourites.tsx";
-import React from "react";
 
-const Articles:React.FC = () => {
-  const dispatch = useNewsDispatch();
+export default function Articles() {
+  const articleDispatch = useArticlesDispatch();
 
   useEffect(() => {
-    fetchNews(dispatch);
-    console.log("articleDispatch: ", dispatch)
-  }, [dispatch]);
+    fetchArticles(articleDispatch);
+  }, [articleDispatch]);
 
   return (
-    <div className="container flex w-full h-full items-center justify-center">
-      <div className="mt-2 mx-auto w-10/12  bg-slate-400 shadow-lg shadow-slate-500 h-full justify-between flex items-center">
-        <ErrorBoundary>
-          <Suspense fallback={<div>Loading...</div>}>
-            <h1 className='text-black text-xl font-semibold'>
-              Trending News
-            </h1>
-            <ArticleList />
-          </Suspense>
-        </ErrorBoundary>
+    <div>
+      <br />
+      <div className="w-full flex flex-auto">
+        <h1 className="text-gray-900 font-bold mb-2 mt-2 mx-2 text-2xl">
+          Articles
+        </h1>
       </div>
-      <div className="mt-2 mx-auto w-2/12 flex-col bg-neutral-500 dark:bg-slate-300 shadow-lg shadow-stone-500 h-full justify-center flex items-center">
+      <div className="mt-2 justify-between flex items-center w-full">
         <ErrorBoundary>
-          <Suspense fallback={<div>Loading...</div>}>
-            <h3 className='text-stone-700 text-xl font-semibold'>
-                Favourites
-            </h3>
-            <Favourites />
-          </Suspense>
+            <Suspense fallback={
+                <div className="flex items-center justify-center">
+                  <p className="text-center justify-center">
+                    Loading...
+                  </p>
+                  <progress className="transition ease-linear" value={10} aria-busy={true} />
+                </div>
+              }
+            >
+              <ArticleList />
+            </Suspense>
         </ErrorBoundary>
       </div>
     </div>
   );
 }
 
-export default Articles;

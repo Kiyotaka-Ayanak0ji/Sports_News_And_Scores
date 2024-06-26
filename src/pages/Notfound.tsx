@@ -1,19 +1,29 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const NotFound:React.FC = () => {
-  return (
-    <div className='flex-col absolute top-24 left-1/4 w-1/2 h-2/3 rounded-lg items-center justify-center bg-stone-900 flex shadow-lg shadow-slate-300'>
-        <h2 className='flex absolute top-10 text-3xl font-semibold text-neutral-400'>
-            404 Page Not Found.
-        </h2>
-        <hr/>
-        <Link to="/account"  
-          className='p-5 w-30 items-center font-bold h-10 rounded-lg flex transition ease-in-out delay-200 shadow-lg outline-none mt-2 focus:ring-amber-200 bg-stone-500 dark:bg-blue-500 text-white dark:focus:ring-slate-300'>
-            Back To Home  
-        </Link>
+const Notfound: React.FC = () => {
+  return ( 
+    <div>
+      <h1 className='text-4xl text-stone-600 font-bold text-center mt-8'>
+        404 - Not Found
+      </h1>
+      <br />
+      
+      <p className='text-lg text-black text-center'>
+        The page you are looking for does not exist.
+      </p>
+
+      <hr className='p-1 w-2/3 bg-stone-900 h-2'/>
+
+      <div className='text-xl font-bold text-center mt-8'>
+        <button className='bg-blue-500 text-center hover:bg-blue-700 transition ease-linear hover:ring-2 hover:ring-cyan-400 text-white font-bold py-2 px-4 rounded' id="backToHomeButton">
+          <Link to='/account'>
+            Go Home
+          </Link>
+        </button>
+      </div>
+      
     </div>
   );
-}
-
-export default NotFound;
+};
+export default Notfound;

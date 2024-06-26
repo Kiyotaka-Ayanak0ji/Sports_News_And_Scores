@@ -1,171 +1,107 @@
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import { useEffect, useState } from 'react'
-import { UserPreferences, fetchPreferences, updateUserPreferences } from '../../context/user/actions';
-import { Sport } from '../../types/sports';
-import { useUserState } from '../../context/user/context';
+import { useSportState } from "../../context/sports/context";
+import { useTeamsState } from "../../context/teams/context";
+import {  Fragment, useState } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { useNavigate } from "react-router-dom";
+import { usePreferencesDispatch, usePreferencesState } from "../../context/preferences/context";
+import {  setPreferences } from "../../context/preferences/action";
+import  { useEffect } from "react";
+import { fetchPreferences } from "../../context/preferences/action";
+import { fetchSports } from "../../context/sports/action";
+import { fetchTeams } from "../../context/teams/action";
+import { useSportDispatch } from "../../context/sports/context";
+import { useTeamsDispatch } from "../../context/teams/context";
+import { UserPreferences } from "../../context/preferences/types";
 
-const Settings = () => {
-  const sports_sel:string[] = [];
-  const team_sel:string[] = [];
+export default function Preferences() {
+  const navigate = useNavigate();
+  
+  const preferenceDispatch = usePreferencesDispatch();
+  const sportsDispatch = useSportDispatch();
+  const teamsDispatch = useTeamsDispatch();
 
-  const set_pref:UserPreferences = {
-    SelectedSports: sports_sel,
-    SelectedTeams: team_sel
-  }
-
-  const teams = [
-    {
-      "id": 1,
-      "name": "Thunderbolts",
-    },
-    {
-      "id": 2,
-      "name": "Dragonslayers",
-    },
-    {
-      "id": 3,
-      "name": "Phoenix Rising",
-    },
-    {
-      "id": 4,
-      "name": "Avalanche",
-    },
-    {
-      "id": 5,
-      "name": "Titans",
-    },
-    {
-      "id": 6,
-      "name": "Vortex Vipers",
-    },
-    {
-      "id": 7,
-      "name": "Spectral Shadows",
-    },
-    {
-      "id": 8,
-      "name": "Blitzkrieg",
-    },
-    {
-      "id": 9,
-      "name": "Fury United",
-    },
-    {
-      "id": 10,
-      "name": "Lightning Strikes",
-    },
-    {
-      "id": 11,
-      "name": "Serpents of Fire",
-    },
-    {
-      "id": 12,
-      "name": "Galaxy Warriors",
-    },
-    {
-      "id": 13,
-      "name": "Stormbreakers",
-    },
-    {
-      "id": 14,
-      "name": "Enigma Enforcers",
-    },
-    {
-      "id": 15,
-      "name": "Blaze Squadron",
-    },
-    {
-      "id": 16,
-      "name": "Phantom Phantoms",
-    },
-    {
-      "id": 17,
-      "name": "Celestial Chargers",
-    },
-    {
-      "id": 18,
-      "name": "Rebel Renegades",
-    },
-    {
-      "id": 19,
-      "name": "Inferno Ignitors",
-    },
-    {
-      "id": 20,
-      "name": "Stealth Strikers",
-    },
-    {
-      "id": 21,
-      "name": "Nova Knights",
-    },
-    {
-      "id": 22,
-      "name": "Crimson Crushers",
-    },
-    {
-      "id": 23,
-      "name": "Rapid Raptors",
-    },
-    {
-      "id": 24,
-      "name": "Shadow Assassins",
-    }
-  ]
-
-  const sports = [
-    {
-      "id": 1,
-      "name": "Basketball"
-    },
-    {
-      "id": 2,
-      "name": "American Football"
-    },
-    {
-      "id": 3,
-      "name": "Rugby"
-    },
-    {
-      "id": 4,
-      "name": "Field Hockey"
-    },
-    {
-      "id": 5,
-      "name": "Table Tennis"
-    },
-    {
-      "id": 6,
-      "name": "Cricket"
-    }
-  ];
-
-  const [isOpen,setIsOpen] = useState(false);
-  const [isLoading,setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetchPreferences();
-    updateUserPreferences(set_pref);
-    setIsLoading(false);
-  },[isLoading,isOpen]);
+    fetchPreferences(preferenceDispatch);
+  }, [preferenceDispatch]);
 
-  const handleChange = (sport_item:Sport) => {
-    if(sports_sel.includes(sport_item.name)){
-      //remove
-      sports_sel.splice(sports_sel.indexOf(sport_item.name),1);
-    }
-    else{
-      sports_sel.push(sport_item.name);
-    }
+  useEffect(() => {
+    fetchSports(sportsDispatch);
+  }, [sportsDispatch]);
+  
+  useEffect(() => {
+    fetchTeams(teamsDispatch);
+  }, [teamsDispatch]);
+
+  const { sports } = useSportState();
+
+  const { teams } = useTeamsState();
+  
+  const { preferences } = usePreferencesState();
+
+  const [, setIsOpen] = useState(false)
+
+  const closeModal = () => {
+    setIsOpen(false)
+    navigate("../")
   }
 
-  const handleTeamChange = (team_item:Sport) => {
-    if(sports_sel.includes(team_item.name)){
-      //remove
-      sports_sel.splice(sports_sel.indexOf(team_item.name),1);
+  let [sportsState, setSportsState] = useState<any>([])
+
+  let [teamsState, setTeamsState] = useState<any>([])
+
+  let [userPreferences, setUserPreferences] = useState<UserPreferences>(preferences)
+
+  const preferencesDispatch = usePreferencesDispatch();
+
+  if(sports.length>0 && sportsState.length===0){
+    setSportsState(sports);
+  }
+
+  if(teams.length>0 && teamsState.length===0){
+    setTeamsState(teams);
+  }
+
+  useEffect(()=>{
+    setUserPreferences(preferences);
+  },[preferences]);
+
+
+  if(userPreferences===null && sportsState.length>0 && teamsState.length>0){
+    setUserPreferences(preferences);
+  }
+
+  const handleSportChange = async (e: any) => {
+    let sport = e.target.value
+    let newPreferences = userPreferences
+    if(e.target.checked){
+      newPreferences.preferences.selectedSports.push(sport)
+    }else{
+      newPreferences.preferences.selectedSports = newPreferences.preferences.selectedSports.filter((item: string) => item !== sport)
     }
-    else{
-      sports_sel.push(team_item.name);
+    setUserPreferences(newPreferences)
+    setPreferences(preferencesDispatch, userPreferences)
+  }
+
+  const handleTeamChange = async (e: any) => {
+
+    let team = e.target.value
+    let newPreferences = userPreferences
+    if(e.target.checked){
+      newPreferences.preferences.selectedTeams.push(team)
+    }else{
+      newPreferences.preferences.selectedTeams = newPreferences.preferences.selectedTeams.filter((item: string) => item !== team)
     }
+    setUserPreferences(newPreferences)
+    setPreferences(preferencesDispatch, userPreferences)
+  }
+
+  const [isLoading,setIsLoading] = useState(false);
+  
+  const handleSubmit = () => {
+    setPreferences(preferencesDispatch, userPreferences)
+    closeModal()
+    setIsLoading(false);
   }
 
   if(isLoading){
@@ -179,89 +115,127 @@ const Settings = () => {
     )
   }
 
-  const handleCheck =(name:string) => {
+  // const handleCheck =(name:string) => {
     
-    const {user} = useUserState();
+  //   const {user} = useUserState();
 
-    if(user.user.preferences.SelectedSports.includes(name) || 
-    user.user.preferences.SelectedTeams.includes(name)){
-      return true;
-    }
-    return false;
-  }
+  //   if(user.user.preferences.SelectedSports.includes(name) || 
+  //   user.user.preferences.SelectedTeams.includes(name)){
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
 
   return (
-    <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4">
-            <DialogPanel
-              transition
-              className="w-full max-w-md rounded-xl bg-white/5 p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0"
-            >
-              <DialogTitle as="h3" className="text-base/7 font-medium text-white">
+    <Transition appear show={true} as={Fragment}>
+      <Dialog as="div" className="fixed inset-0 z-10 overflow-y-auto" onClose={closeModal}>
+        <div className="min-h-screen px-4 text-center">
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            {/* <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-30" /> */}
+          </Transition.Child>
+
+          <span
+            className="inline-block h-screen align-middle"
+            aria-hidden="true"
+          >
+            &#8203;
+          </span>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
+          >
+            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-zinc-500 shadow-xl rounded-2xl">
+              <Dialog.Title
+                as="h3"
+                className="text-lg font-medium leading-6 text-gray-900"
+              >
                 Preferences
-              </DialogTitle>
-              <hr className='text-stone-900 mr-2 ml-2 p-1 h-2'/>
-              
-              <h2 className='mx-auto p-2 text-xl text-black'>
-                Favourite Sports
-              </h2>
-              <div className='flex-wrap w-full h-1/3 items-center justify-between'>
-                  {sports.map((sport) => (
-                    <span className='w-8'>
-                      <label htmlFor='team' className='text-base text-black'>
-                        {sport.name}
-                      </label>
-                      <input 
-                        id='sport'
-                        type='checkbox' 
-                        checked={handleCheck(sport.name)}
-                        onClick={() => handleChange(sport)} 
-                        className='transition ease-in w-4 h-4 
-                        outline-none focus:outline-blue'
-                      />  
-                    </span>
-                  ))}
+              </Dialog.Title>
+              <div className="mt-2">
+                <div className="flex-col justify-between overflow-x-auto overflow-y-auto">
+                  <div>
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                      Sports
+                    </h3>
+                    <div className="mt-2">
+                      {sportsState.map((sport: any) => (
+                        <div key={sport.id} className="flex items-start">
+                          <div className="flex items-center h-5">
+                            <input
+                              id={sport.name}
+                              name={sport.name}
+                              type="checkbox"
+                              className="focus:ring-blue-500/50 h-4 w-4 text-blue-600/50 border-gray-300 rounded"
+                              onChange={handleSportChange}
+                              value={sport.name}
+                              checked={userPreferences.preferences.selectedSports.includes(sport.name)}
+                            />
+                          </div>
+                          < div className="ml-3 text-sm">
+                            <label htmlFor={sport.name} className="font-medium text-gray-700">
+                              {sport.name}
+                            </label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                      Teams
+                    </h3>
+                    <div className="mt-2">
+                      {teamsState.map((team: any) => (
+                        <div key={team.id} className="flex items-start">
+                          <div className="flex-col items-center h-5">
+                            <input
+                              id={team.name}
+                              name={team.name}
+                              type="checkbox"
+                              className="focus:ring-blue-500/50 h-4 w-4 text-blue-600/50 border-gray-300 rounded"
+                              onChange={handleTeamChange}
+                              value={team.name}
+                              checked={userPreferences.preferences.selectedTeams.includes(team.name)}
+                            />
+                          </div>
+                          <div className="ml-3 text-sm">
+                            <label htmlFor={team.name} className="font-medium text-gray-700">
+                              {team.name}
+                            </label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-              
-              <hr className='text-stone-900 mr-2 ml-2 p-1 h-2'/>
-              <h2 className='p-2 mx-auto text-xl text-black'>
-                Favourite Teams
-              </h2>
-              <div className='flex-wrap w-full h-1/3 items-center justify-between'>
-                  {teams.map((team) => (
-                    <span className='w-8'>
-                      <label htmlFor='team' className='text-base text-black'>
-                        {team.name}
-                      </label>
-                      <input 
-                        id='sport'
-                        type='checkbox' 
-                        checked={handleCheck(team.name)}
-                        onClick={() => handleTeamChange(team)} 
-                        className='transition ease-in w-4 h-4 
-                        outline-none focus:outline-blue'
-                      />  
-                    </span>
-                  ))}
-              </div>
-              
-              <div className="mt-4 items-center justify-center">
-                <Button
-                  className="inline-flex items-center gap-2 rounded-md bg-blue-500 hover:bg-blue-700 py-1.5 px-3 text-sm/6 font-semibold text-white/75 shadow-inner shadow-stone-400/10 focus:outline-none data-[hover]:bg-gray-600 data-[focus]:outline-1 data-[focus]:outline-white data-[open]:bg-gray-700"
-                  onClick={() => {
-                    setIsLoading(true);
-                    setIsOpen(false)
-                  }}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                  onClick={handleSubmit}
                 >
                   Save
-                </Button>
+                </button>
               </div>
-            </DialogPanel>
-          </div>
+            </div>
+          </Transition.Child>
         </div>
       </Dialog>
+    </Transition>
   )
 }
-
-export default Settings;

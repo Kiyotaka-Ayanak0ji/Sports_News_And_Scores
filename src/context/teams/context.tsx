@@ -1,28 +1,24 @@
 import React, { createContext, useContext, useReducer } from "react";
-import { TeamActions, TeamState, initialTeamState, reducer } from "./reducer";
+import { TeamsState, initialTeamsState } from "./types";
+import { reducer, TeamActions } from "./reducer";
 
+const TeamsStateContext = createContext<TeamsState>(initialTeamsState);
 
-const TeamStateContext = createContext<TeamState>(initialTeamState);
+const TeamsDispatchContext = createContext<React.Dispatch<TeamActions> | undefined>(undefined);
 
-export type TeamDispatch = React.Dispatch<TeamActions>;
+export const TeamsProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
+{
+  const [state, dispatch] = useReducer(reducer, initialTeamsState);
 
-const TeamDispatchContext = createContext<TeamDispatch | undefined>(
-    undefined
-);
+  return (
+    <TeamsStateContext.Provider value={state}>
+      <TeamsDispatchContext.Provider value={dispatch}>
+        {children}
+      </TeamsDispatchContext.Provider>
+    </TeamsStateContext.Provider>
+  );
+};
 
-export const TeamProvider:React.FC<React.PropsWithChildren> = ({ children }) => {
-    const [state,dispatch] = useReducer(reducer,initialTeamState);
-    
-    return (
-        <TeamStateContext.Provider value={state}>
-            <TeamDispatchContext.Provider value={dispatch}>
-                {children}
-            </TeamDispatchContext.Provider>
-        </TeamStateContext.Provider>
-    )
-}
+export const useTeamsState = () => useContext(TeamsStateContext);
 
-export const useTeamState = () => useContext(TeamStateContext);
-
-export const useTeamDispatch = () => useContext(TeamDispatchContext);
-
+export const useTeamsDispatch = () => useContext(TeamsDispatchContext);

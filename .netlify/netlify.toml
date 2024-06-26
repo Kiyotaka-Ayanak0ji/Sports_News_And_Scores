@@ -1,4 +1,4 @@
-functionsDirectory = "/root/sports-center/netlify/functions"
+functionsDirectory = "/root/sports-center/sports-app-main/netlify/functions"
 functionsDirectoryOrigin = "config-v1"
 plugins = []
 headers = []
@@ -9,11 +9,12 @@ redirects = []
 [functions."*"]
 
 [build]
-publish = "/root/sports-center/dist"
+publish = "/root/sports-center/sports-app-main/dist"
 publishOrigin = "config"
+base = "/root/sports-center/sports-app-main"
 command = "npm run build"
 commandOrigin = "config"
-functions = "/root/sports-center/netlify/functions"
+functions = "/root/sports-center/sports-app-main/netlify/functions"
 
 [build.environment]
 
