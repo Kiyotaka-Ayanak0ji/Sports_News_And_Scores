@@ -10,7 +10,10 @@ import { toast } from 'react-toastify';
 import RefreshButton from './Refresh.tsx';
 
 export default function MatchId() {
+  
+  let liked = localStorage.getItem("likedMatches")||"[]";
 
+  let res = Array(JSON.parse(liked));
   
   const [match,setMatch] = useState<Match>({
     id: 0,
@@ -27,6 +30,7 @@ export default function MatchId() {
   });
   
   const {matchId} = useParams();
+
   useEffect(()=>{
     fetchMatch(matchId);
   }, [matchId]);
@@ -58,9 +62,6 @@ export default function MatchId() {
     navigate("../");
   }
   
-  let liked = localStorage.getItem("likedMatches") ?? "[]";
-
-  let res = Array(JSON.parse(liked));
   
   const handleLikes = (id: number) => {
     res = Array(JSON.parse(localStorage.getItem("likedMatches") ?? "[]"));
@@ -87,6 +88,10 @@ export default function MatchId() {
 	}
 
   const [isLoading,setIsLoading] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem("likedMatches",JSON.stringify(res));
+  },[]);
 
   const handleRefresh = () => {
 
@@ -136,8 +141,10 @@ export default function MatchId() {
                     <p className="flex-1 font-medium text-base">
                       {match.score[match.teams[0].name]}
                     </p>
-                    <div className='flex-col gap-1 items-end p-2'>
+                    <div className='items-end p-2'>
                       <RefreshButton onClick={() => handleRefresh} isLoading={isLoading}/>
+                    </div>
+                    <div className='items-end p-2'>
                       <LikeButton onClick={() => handleLikes(Number(matchId??'0'))} clicked={res.includes(matchId)}/>
                     </div>
                   </div>
