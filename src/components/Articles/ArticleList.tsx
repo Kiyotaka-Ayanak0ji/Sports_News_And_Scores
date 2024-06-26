@@ -193,8 +193,8 @@ export default function ArticleList(){
     <div className="container auto flex gap-12">
       <div className="flex justify-end w-11/12 mx-auto my-2">
         <select 
-        className={"container flex-col overflow-x-hidden overflow-y-hidden overflow-scroll"}>
-          <div className={'w-full h-full border-2 border-amber-400'}>
+        className={"container flex-col overflow-scroll"}>
+          <div className={'border-2 border-amber-400'}>
             {categories.map((category) => (
               <option
                 key={category}
@@ -210,24 +210,23 @@ export default function ArticleList(){
             ))}
           </div>
         </select>
-        <select
-          value={selectedSort}
-          onChange={(e) => handleSortChange(e.target.value)}
-          className="justify-between py-2 px-5 text-stone-600 bg-slate-400 rounded-lg"
-        >
-          {sortCategories.map((sortCategory) => (
-            <option
+        <select 
+        className="justify-between py-2 px-5 text-stone-600 bg-slate-400 rounded-lg">
+          <div className={'border-2 border-amber-400'}>
+            {sortCategories.map((sortCategory) => (
+              <option
               key={sortCategory}
               onClick={() => handleSortChange(sortCategory)}
-              className={
-                sortCategory === selectedSort
-                  ? "active bg-slate-500 dark:bg-blue-500 p-2 rounded-md hover:bg-blue-400"
-                  : "p-2 rounded-md hover:bg-gray-400 dark:hover:bg-blue-400 bg-slate-800"
-              }
-            >
-              {sortCategory}
-            </option>
-          ))}
+                className={
+                  sortCategory === selectedSort
+                    ? "active bg-slate-500 dark:bg-blue-500 p-2 rounded-md hover:bg-blue-400"
+                    : "p-2 rounded-md hover:bg-gray-400 dark:hover:bg-blue-400 bg-slate-800"
+                }
+              >
+                {sortCategory}
+              </option>
+            ))}
+          </div>
         </select>
         <div className="bg-slate-300 rounded-lg mx-2 p-3 text-stone-900">
           <FunnelIcon className="h-4 w-4" />
@@ -246,7 +245,7 @@ export default function ArticleList(){
         {sortedArticles.map((article: Article) => {
           return (
             <div className="flex-auto flex justify-center">
-              <div className="max-w-sm rounded overflow-y-scroll shadow-lg flex-auto">
+              <div className="max-w-sm rounded shadow-lg flex-auto">
                 <img
                   className="flex items-center justify-center h-48 w-full object-cover"
                   src={article.thumbnail}
@@ -254,7 +253,9 @@ export default function ArticleList(){
                 />
 
                 <div className="px-6 py-4">
-                  <div className="font-bold text-xl mb-2">{article.title}</div>
+                  <div className="font-bold text-xl mb-2">
+                    {article.title}
+                  </div>
                   <div className="px-6 pt-4 pb-2">
                     <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
                       {getFormattedDate(article.date)}
@@ -263,14 +264,16 @@ export default function ArticleList(){
                       {article.sport.name}
                     </span>
                   </div>
-                  <p className="text-gray-700 text-base">{article.summary}</p>
-                  <br />
+                  
+                  <p className="p-2 text-gray-700 text-base">
+                    {article.summary}
+                  </p>
+
                   <Link to={(authenticated) ? `/account/articles/${article.id}` : `/view/articles/${article.id}`}>
                     <button
                       id="readToggle"
-                      style={{ marginLeft: "240px" }}
                       onClick={() => setIsOpen(true)}
-                      className="inline-flex rounded-md border border-transparent bg-blue-600 px-2 py-1 mr-2 text-sm 
+                      className="mt-2 flex text-center rounded-md border border-transparent bg-blue-600 px-2 py-1 mr-2 text-sm 
                       font-medium text-cyan-400 hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                     >
                       Read More...
